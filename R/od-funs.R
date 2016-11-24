@@ -284,7 +284,7 @@ line2route <- function(l, route_fun = "route_cyclestreet", n_print = 10, list_ou
     rc2 <- FUN(from = c(ldf$fx[2], ldf$fy[2]), to = c(ldf$tx[2], ldf$ty[2]), ...)
 
     # stop(paste0("Sorry, the function ", route_fun, " cannot be used with line2route at present")
-    for(i in 1:nrow(ldf)){
+    foreach::foreach(i in 1:nrow(ldf)) %dopar% {
       tryCatch({
         r[[i]] <- FUN(from = c(ldf$fx[i], ldf$fy[i]), to = c(ldf$tx[i], ldf$ty[i]), ...)
       }, error = function(e){warning(paste0("Fail for line number ", i))})
