@@ -7,7 +7,8 @@ output:
       "-V", "classoption=twocolumn"
     ]
   word_document: default
-bibliography: references.bib
+bibliography: ~/allrefs.bib
+author: "Robin Lovelace, Leeds Institute for Transport Studies and LIDA"
 abstract: |
   Tools for transport planning should be flexible, scalable and well-integrated with geographic data. **stplanr** meets each of these criteria by providing functionality commonly needed for transport planning in R, with an emphasis on spatial transport data. Reproducible code - https://github.com/ropensci/stplanr.
 ---
@@ -18,7 +19,7 @@ knitr::opts_chunk$set(dev = 'pdf', out.width='\\textwidth')
 
 # Introduction
 
-**stplanr** is an R package for transport planning [@lovelace_stplanr:_2017].
+**stplanr** is an R package for transport planning [@lovelace_stplanr:_2016].
 
 Install **stplanr** from CRAN:
 
