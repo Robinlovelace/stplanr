@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
 
 [![Build Status](https://travis-ci.org/ropensci/stplanr.svg?branch=master)](https://travis-ci.org/ropensci/stplanr) [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/stplanr)](https://cran.r-project.org/package=stplanr)
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/stplanr)](https://github.com/metacran/cranlogs.app)
-[![codecov.io](https://codecov.io/github/ropensci/stplanr/coverage.svg?branch=master)](https://codecov.io/github/ropensci/stplanr?branch=master)
+[![](https://badges.ropensci.org/10_status.svg)](https://github.com/ropensci/onboarding/issues/10)
+
 
 ```{r, echo=FALSE, message=FALSE}
 library(stplanr)
@@ -46,7 +47,7 @@ must be combined with geo-referenced zones or points to generate meaningful
 analyses and visualisations of 'flows' or origin-destination (OD) data.
 **stplanr** facilitates this with
 `od2line()`, which takes flow and geographical data as inputs and
-outputs a `SpatialLinesDataFrame`. Some example data is provided in the package:
+outputs spatial data. Some example data is provided in the package:
 
 ```{r, results='hide', message=FALSE}
 library(stplanr)
@@ -68,36 +69,31 @@ w <- flow$All / max(flow$All) *10
 plot(travel_network, lwd = w)
 ```
 
-The package can also allocate flows to the road network, for example through
-a link to the [CycleStreets.net API](https://www.cyclestreets.net/api/).
+The package can also allocate flows to the road network, e.g. with [CycleStreets.net](https://www.cyclestreets.net/api/) and the OpenStreetMap Routing Machine ([OSRM](https://github.com/Project-OSRM/osrm-backend)) API interfaces.
+These are supported in `route_*()` functions such as `route_cyclestreets` and `route_osrm()`:
 
 Route functions take lat/lon inputs:
 
 ```{r, eval=FALSE}
 trip <-
-  route_cyclestreet(from = c(-1, 53), to = c(-1.1, 53), plan = "balanced")
+  route_osrm(from = c(-1, 53), to = c(-1.1, 53))
 ```
 
 and place names, found using the Google Map API:
 
-```{r cycle-trip, message=FALSE, warning=FALSE}
+```{r cycle-trip, message=FALSE, warning=FALSE, eval=FALSE, echo=FALSE}
 if(!Sys.getenv("CYCLESTREET") == ""){
   trip <- route_cyclestreet("Bradford, UK", "Leeds, Yorkshire", plan = "balanced")
   plot(trip)
 }
 ```
 
-We can replicate this call to CycleStreets.net multiple times
-using `line2route`.
+We can replicate this call multiple times using `line2route`.
 
 ```{r plot2, results='hide', message=FALSE}
 intrazone <- travel_network$Area.of.residence == travel_network$Area.of.workplace
 travel_network <- travel_network[!intrazone,]
-if(Sys.getenv("CYCLESTREET") == ""){
-  t_routes = routes_fast
-} else {
-  t_routes <- line2route(travel_network)
-}
+t_routes <- line2route(travel_network, route_fun = route_osrm)
 plot(t_routes)
 ```
 
@@ -118,7 +114,7 @@ below.
 
 ```{r rnet, warning=FALSE}
 t_routes$All <- travel_network$All
-rnet <- overline(sldf = t_routes, attrib = "All", fun = sum)
+rnet <- overline(t_routes, attrib = "All", fun = sum)
 
 lwd <- rnet$All / mean(rnet$All)
 plot(rnet, lwd = lwd)

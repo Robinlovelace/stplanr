@@ -45,6 +45,7 @@ onewayid <- function(x, attrib, id1 = names(x)[1], id2 = names(x)[2],
 #' # Demonstrate the results from onewayid and onewaygeo are identical
 #' flow_oneway_geo = onewaygeo(flowlines, attrib = attrib)
 #' plot(flow_oneway$All, flow_oneway_geo$All)
+#' onewayid(flowlines_sf, "all")
 #' @export
 onewayid.data.frame <- function(x, attrib, id1 = names(x)[1], id2 = names(x)[2],
                                 stplanr.key = od_id_order(x, id1, id2)){
@@ -108,7 +109,7 @@ onewayid.data.frame <- function(x, attrib, id1 = names(x)[1], id2 = names(x)[2],
 onewayid.SpatialLines <- function(x, attrib, id1 = names(x)[1], id2 = names(x)[2],
                                   stplanr.key = od_id_order(x, id1, id2)){
 
-  x_geom <- sp::SpatialLines(x@lines, proj4string = CRS(proj4string(x)))
+  x_geom <- sp::SpatialLines(x@lines, proj4string = sp::CRS(proj4string(x)))
   x <- x@data
 
   x_oneway = onewayid(x, id1, id2, attrib = attrib)

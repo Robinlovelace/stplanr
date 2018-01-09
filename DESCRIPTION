@@ -1,9 +1,10 @@
 Package: stplanr
 Type: Package
 Title: Sustainable Transport Planning
-Version: 0.1.9
+Version: 0.2.2.09999
 Authors@R: c(
-    person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre")),
+    person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0001-5679-6536")),
     person("Richard", "Ellison", role = c("aut")),
     person("Barry", "Rowlingson", role = c("ctb"), comment = "Author of overline"),
     person("Nick", "Bearman", role = c("ctb"), comment = "Co-author of gclip"),
@@ -19,9 +20,9 @@ License: MIT + file LICENSE
 BugReports: https://github.com/ropensci/stplanr/issues
 LazyData: yes
 Depends:
-    sp,
     R (>= 3.0)
 Imports:
+    sp,
     curl,
     readr,
     dplyr,
@@ -41,14 +42,17 @@ Imports:
     Rcpp (>= 0.12.1),
     igraph,
     nabor,
-    rlang
-LinkingTo:
-    RcppArmadillo,
+    rlang,
+    sf,
+    lwgeom
+LinkingTo: RcppArmadillo,
     Rcpp
 Suggests:
     testthat,
     knitr,
     rmarkdown,
+    dodgr
+Enhances:
     tmap
 VignetteBuilder: knitr
 URL: https://github.com/ropensci/stplanr

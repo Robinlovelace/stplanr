@@ -17,9 +17,9 @@
 #'  \item \code{\link{route_cyclestreet}} - Finds the fastest routes for cyclists between two places.
 #' }
 #'
-#' @import sp
 #' @import rgdal
 #' @import curl
+#' @importFrom sp bbox plot spTransform Lines SpatialLines spChFIDs proj4string proj4string<- CRS coordinates
 #' @importFrom rgeos gBuffer gLength gIntersects gIntersection gArea gSimplify
 #' @importFrom graphics text
 #' @importFrom methods as slot
@@ -35,6 +35,16 @@
 #' @importFrom utils download.file tail unzip
 #' @importFrom maptools SpatialLinesMidPoints
 #' @importFrom rlang .data
-#'
+#' @importFrom sf st_cast st_geometry
 #' @useDynLib stplanr
 NULL
+#' Pipe operator
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom dplyr %>%
+#' @usage lhs \%>\% rhs
+NULL
+utils::globalVariables(c(".", "n"))
