@@ -18,6 +18,8 @@
 #' being distributed by area.
 #' @param aggzones A SpatialPolygonsDataFrame containing the new
 #' boundaries to aggregate to.
+#' @param aggzone_points Points representing origins of OD flows
+#' (typically population-weighted centroids)
 #' @param cols A character vector containing the names of columns on which to
 #' apply FUN. By default, all numeric columns are aggregated.
 #' @param aggcols A character vector containing the names of columns in
@@ -25,47 +27,92 @@
 #' only the first column is retained. These columns are renamed with a prefix
 #' of "o_" and "d_".
 #' @param FUN Function to use on aggregation. Default is sum.
-#' @param prop_by_area Boolean value indicating if the values should be
-#' proportionally adjusted based on area. Default is TRUE unless FUN = mean.
-#' @param digits The number of digits to use when proportionally adjusting
-#' values based on area. Default is the value of getOption("digits").
-#'
+#' @inheritParams sp_aggregate
 #' @return data.frame containing the aggregated od flows.
 #'
 #' @export
 #' @examples
-#' data(flow)
-#' data(zones)
-#' zones@data$region <- 1
-#' zones@data[c(2, 5), c('region')] <- 2
-#' aggzones <- SpatialPolygonsDataFrame(rgeos::gUnaryUnion(
-#'  zones,
-#'  id = zones@data$region), data.frame(region=c(1, 2))
-#' )
-#' zones@data$region <- NULL
-#' od_aggregate(flow, zones, aggzones)
-#' # another example with more zones and plots
-#' zones$quadrant = quadrant(zones, number_out = TRUE)
-#' aggzones <- SpatialPolygonsDataFrame(
-#' rgeos::gUnaryUnion(
-#'  zones,
-#'  id = zones@data$quadrant), data.frame(region = c(1:4))
-#' )
-#' od = od_aggregate(flow, zones, aggzones)
-#' od_sp = od2line(flow, zones)
-#' zones@data = cbind(1:nrow(zones), zones@data)
-#' od_sp_agg = od2line(od, zones, aggzones)
-#' # plot results
-#' plot(aggzones, lwd = 5)
-#' plot(zones, border = "red", add = TRUE)
-#' plot(od_sp, add = TRUE, col = "yellow")
-#' lwd = od_sp_agg$All / 50
-#' plot(od_sp_agg, lwd = lwd, add = TRUE)
-od_aggregate <- function(flow, zones, aggzones, cols = FALSE, aggcols = FALSE,
+#' zones$quadrant = c(1, 2, 1, 4, 5, 6, 7, 1)
+#' aggzones <- rgeos::gUnaryUnion(zones, id = zones@data$quadrant)
+#' aggzones <- sp::SpatialPolygonsDataFrame(aggzones, data.frame(region = c(1:6)), match.ID = FALSE)
+#' sp::proj4string(aggzones) = sp::proj4string(zones)
+#' aggzones_sf <- sf::st_as_sf(aggzones)
+#' aggzones_sf <- sf::st_set_crs(aggzones_sf, sf::st_crs(zones_sf))
+#' od_agg <- od_aggregate(flow, zones_sf, aggzones_sf)
+#' colSums(od_agg[3:9]) == colSums(flow[3:9])
+#' od_sf_agg <- od2line(od_agg, aggzones_sf)
+#' plot(flowlines, lwd = flowlines$Bicycle)
+#' plot(od_sf_agg$geometry, lwd = od_sf_agg$Bicycle, add = TRUE, col = "red")
+od_aggregate <- function(flow, zones, aggzones,
+                         aggzone_points = NULL,
+                         cols = FALSE,
+                         aggcols = FALSE,
                          FUN = sum,
                          prop_by_area = ifelse(identical(FUN, mean) == FALSE, TRUE, FALSE),
-                         digits = getOption("digits")){
+                         digits = getOption("digits")) {
+  UseMethod("od_aggregate", zones)
+}
+#' @export
+od_aggregate.sf <- function(flow, zones, aggzones,
+                            aggzone_points = NULL,
+                            cols = FALSE,
+                            aggcols = FALSE,
+                            FUN = sum,
+                            prop_by_area = ifelse(identical(FUN, mean) == FALSE, TRUE, FALSE),
+                            digits = getOption("digits")) {
 
+  flow_first_col <- colnames(flow)[1]
+  flow_second_col <- colnames(flow)[2]
+  zonesfirstcol <- colnames(zones)[1]
+  aggzonesfirstcol <- colnames(aggzones)[1]
+
+  if (identical(cols, FALSE)) {
+    col_ids <- sapply(flow, is.numeric)
+    cols <- names(col_ids)[col_ids]
+  }
+  if (aggcols == FALSE) {
+    aggcols <- colnames(aggzones)[1]
+  }
+
+  zone_points <- sf::st_centroid(zones)
+  if(is.null(aggzone_points)) {
+    aggzone_points <- sf::st_centroid(aggzones)
+  }
+
+  zones_agg <- zone_points %>%
+    sf::st_join(y = aggzones[aggcols]) %>%
+    sf::st_set_geometry(NULL)
+
+  names(zones_agg)[1] <- flow_first_col
+  zones_agg$new_orig = zones_agg[, aggcols[1]]
+  zones_agg$new_dest = zones_agg[, aggcols[1]]
+
+  flow_new_orig <- flow %>%
+    dplyr::inner_join(y = zones_agg[c(flow_first_col, "new_orig")])
+
+  names(zones_agg)[1] <- flow_second_col
+
+  flow_new_dest <- flow_new_orig %>%
+    dplyr::inner_join(y = zones_agg[c(flow_second_col, "new_dest")])
+
+  flow_ag <- flow_new_dest %>%
+    dplyr::group_by(!!rlang::sym("new_orig"), !!rlang::sym("new_dest")) %>%
+    dplyr::summarise_at(.vars = cols, .funs = sum) %>%
+    dplyr::ungroup()
+
+  flow_ag
+
+  # od2line(flow = flow_ag, zones = aggzones) # to export as sf
+
+}
+#' @export
+od_aggregate.Spatial <- function(flow, zones, aggzones,
+                                 aggzone_points = NULL,
+                                 cols = FALSE,
+                                 aggcols = FALSE,
+                                 FUN = sum,
+                                 prop_by_area = ifelse(identical(FUN, mean) == FALSE, TRUE, FALSE),
+                                 digits = getOption("digits")) {
   zonesfirstcol <- colnames(zones@data)[1]
   aggzonesfirstcol <- colnames(aggzones@data)[1]
 
@@ -167,17 +214,18 @@ od_aggregate <- function(flow, zones, aggzones, cols = FALSE, aggcols = FALSE,
 #'
 #' @export
 #' @examples
-#' data(flow)
-#' data(zones)
+#' \dontrun{
 #' zones@data$region <- 1
 #' zones@data[c(2, 5), c('region')] <- 2
-#' aggzones <- SpatialPolygonsDataFrame(rgeos::gUnaryUnion(
+#' aggzones <- sp::SpatialPolygonsDataFrame(rgeos::gUnaryUnion(
 #'  zones,
 #'  id = zones@data$region), data.frame(region=c(1, 2))
 #' )
 #' zones@data$region <- NULL
 #' zones@data$exdata <- 5
+#' library(sp)
 #' sp_aggregate(zones, aggzones)
+#' }
 sp_aggregate <- function(zones, aggzones, cols = FALSE,
                          FUN = sum,
                          prop_by_area = ifelse(identical(FUN, mean) == FALSE, TRUE, FALSE),

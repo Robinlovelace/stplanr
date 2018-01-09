@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Build Status](https://travis-ci.org/ropensci/stplanr.svg?branch=master)](https://travis-ci.org/ropensci/stplanr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/stplanr)](https://cran.r-project.org/package=stplanr) [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/stplanr)](https://github.com/metacran/cranlogs.app) [![codecov.io](https://codecov.io/github/ropensci/stplanr/coverage.svg?branch=master)](https://codecov.io/github/ropensci/stplanr?branch=master)
+[![Build Status](https://travis-ci.org/ropensci/stplanr.svg?branch=master)](https://travis-ci.org/ropensci/stplanr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/stplanr)](https://cran.r-project.org/package=stplanr) [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/stplanr)](https://github.com/metacran/cranlogs.app) [![](https://badges.ropensci.org/10_status.svg)](https://github.com/ropensci/onboarding/issues/10)
 
 **stplanr** is a package for sustainable transport planning with R.
 
@@ -13,7 +13,7 @@ The initial work on the project was funded by the Department of Transport ([DfT]
 Key functions
 -------------
 
-Data frames representing flows between origins and destinations must be combined with geo-referenced zones or points to generate meaningful analyses and visualisations of 'flows' or origin-destination (OD) data. **stplanr** facilitates this with `od2line()`, which takes flow and geographical data as inputs and outputs a `SpatialLinesDataFrame`. Some example data is provided in the package:
+Data frames representing flows between origins and destinations must be combined with geo-referenced zones or points to generate meaningful analyses and visualisations of 'flows' or origin-destination (OD) data. **stplanr** facilitates this with `od2line()`, which takes flow and geographical data as inputs and outputs spatial data. Some example data is provided in the package:
 
 ``` r
 library(stplanr)
@@ -49,36 +49,23 @@ plot(travel_network, lwd = w)
 
 ![](vignettes/README-plot1-1.png)
 
-The package can also allocate flows to the road network, for example through a link to the [CycleStreets.net API](https://www.cyclestreets.net/api/).
+The package can also allocate flows to the road network, e.g. with [CycleStreets.net](https://www.cyclestreets.net/api/) and the OpenStreetMap Routing Machine ([OSRM](https://github.com/Project-OSRM/osrm-backend)) API interfaces. These are supported in `route_*()` functions such as `route_cyclestreets` and `route_osrm()`:
 
 Route functions take lat/lon inputs:
 
 ``` r
 trip <-
-  route_cyclestreet(from = c(-1, 53), to = c(-1.1, 53), plan = "balanced")
+  route_osrm(from = c(-1, 53), to = c(-1.1, 53))
 ```
 
 and place names, found using the Google Map API:
 
-``` r
-if(!Sys.getenv("CYCLESTREET") == ""){
-  trip <- route_cyclestreet("Bradford, UK", "Leeds, UK", plan = "balanced")
-  plot(trip)
-}
-```
-
-![](vignettes/README-cycle-trip-1.png)
-
-We can replicate this call to CycleStreets.net multiple times using `line2route`.
+We can replicate this call multiple times using `line2route`.
 
 ``` r
 intrazone <- travel_network$Area.of.residence == travel_network$Area.of.workplace
 travel_network <- travel_network[!intrazone,]
-if(Sys.getenv("CYCLESTREET") == ""){
-  t_routes = routes_fast
-} else {
-  t_routes <- line2route(travel_network)
-}
+t_routes <- line2route(travel_network, route_fun = route_osrm)
 plot(t_routes)
 ```
 
@@ -97,7 +84,7 @@ For more examples, `example("line2route")`.
 
 ``` r
 t_routes$All <- travel_network$All
-rnet <- overline(sldf = t_routes, attrib = "All", fun = sum)
+rnet <- overline(t_routes, attrib = "All", fun = sum)
 
 lwd <- rnet$All / mean(rnet$All)
 plot(rnet, lwd = lwd)
@@ -153,16 +140,25 @@ To get internal help on a specific function, use the standard way.
 Dependencies
 ------------
 
-**stplanr** has many dependencies. These are designed to help make it fast, but may make it slow to install for the first time.
-
-Its dependencies are plotted below using the **minCRAN** package:
+**stplanr** imports many great packages that it depends on. Many thanks to the developers of these tools:
 
 ``` r
-dg <- miniCRAN::makeDepGraph("stplanr")
-plot(dg)
+desc = read.dcf("DESCRIPTION")
+headings = dimnames(desc)[[2]]
+fields = which(headings %in% c("Depends", "Imports", "Suggests"))
+pkgs = paste(desc[fields], collapse = ", ")
+pkgs = gsub("\n", " ", pkgs)
+strsplit(pkgs, ",")[[1]]
+#>  [1] "sp"                " R (>= 3.0)"       " curl"            
+#>  [4] " readr"            " dplyr"            " httr"            
+#>  [7] " jsonlite"         " stringi"          " stringr"         
+#> [10] " lubridate"        " maptools"         " raster"          
+#> [13] " rgdal"            " rgeos"            " openxlsx"        
+#> [16] " methods"          " R.utils"          " geosphere"       
+#> [19] " Rcpp (>= 0.12.1)" " igraph"           " nabor"           
+#> [22] " rlang"            " sf"               " testthat"        
+#> [25] " knitr"            " rmarkdown"        " dodgr"
 ```
-
-![](vignettes/README-unnamed-chunk-11-1.png)
 
 Meta
 ----

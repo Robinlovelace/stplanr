@@ -4,8 +4,9 @@
 #' a route planner made by cyclists for cyclists.
 #' The function returns a SpatialLinesDataFrame object representing the
 #' an estimate of the fastest, quietest or most balance route.
-#' Currently only works for the United Kingdom and part of continental Europe.
-#' See \url{http://www.cyclestreets.net/api/}for more information.
+#' Currently only works for the United Kingdom and part of continental Europe,
+#' though other areas may be requested by contacting CycleStreets.
+#' See \url{https://www.cyclestreets.net/api/}for more information.
 #'
 #' @param from Text string or coordinates (a numeric vector of
 #'  \code{length = 2} representing latitude and longitude) representing a point
@@ -26,7 +27,7 @@
 #' CycleStreets.net to find routes suitable for cyclists
 #' between origins and destinations. Requires an
 #' internet connection, a CycleStreets.net API key
-#' and origins and destinations within the UK to run.
+#' and origins and destinations within the UK (and various areas beyond) to run.
 #'
 #' Note that if \code{from} and \code{to} are supplied as
 #' character strings (instead of lon/lat pairs), Google's
@@ -61,39 +62,26 @@
 #' @param save_raw Boolean value which returns raw list from the json if TRUE (FALSE by default).
 #' @export
 #' @seealso line2route
+#' @aliases route_cyclestreets
 #' @examples
 #'
 #' \dontrun{
-#' # Example from
-#' from = c(0.117950, 52.205302); to = c(0.131402, 52.221046)
+#' from = c(-1.55, 53.80) # geo_code("leeds")
+#' to = c(-1.76, 53.80) # geo_code("bradford uk")
 #' json_output = route_cyclestreet(from = from, to = to, plan = "quietest", save_raw = TRUE)
 #' str(json_output) # what does cyclestreets give you?
-#' names(json_output$marker$`@attributes`)
-#' json_output$marker$`@attributes`$start[1] # starting point
-#' json_output$marker$`@attributes`$finish[1] # end point
-#' json_output$marker$`@attributes`$speed[1] # assumed speed (km/hr)
-#' json_output$marker$`@attributes`$busynance # busyness of each section
-#' json_output$marker$`@attributes`$elevations # list of elevations
-#' # jsonlite::toJSON(json_output, pretty = TRUE) # complete json output (long!)
-#' # Plan the 'fastest' route between two points in Manchester
-#' rf_mcr <- route_cyclestreet(from = "M3 4EE", to = "M1 4BT", plan = "fastest")
-#' rf_mcr@data
-#' plot(rf_mcr)
-#' (rf_mcr$length / (1000 * 1.61)) / # distance in miles
-#'   (rf_mcr$time / (60 * 60)) # time in hours - average speed here: ~8mph
-#' # Plan the 'quietest' route from Hereford to Leeds
-#' rqh <- route_cyclestreet(from = "Hereford", to = "Leeds", plan = "quietest")
-#' plot(rq_hfd)
+#' rf_lb <- route_cyclestreet(from, to, plan = "fastest")
+#' rf_lb@data
+#' plot(rf_lb)
+#' (rf_lb$length / (1000 * 1.61)) / # distance in miles
+#'   (rf_lb$time / (60 * 60)) # time in hours - average speed here: ~8mph
 #' # Plan a 'balanced' route from Pedaller's Arms to the University of Leeds
-#' rb_pa <- route_cyclestreet("Pedaller's Arms, Leeds", "University of Leeds", "balanced")
-#' # A long distance route (max = 500 km)
-#' woodys_route = route_cyclestreet(from = "Stokesley", plan = "fastest", to = "Leeds")
-#' # Plan a route between two lat/lon pairs in the UK
-#' route_cyclestreet(c(-2, 52), c(-1, 53), "fastest")
+#' rb_pa <- route_cyclestreet("Pedaller's Arms, Leeds", "University of Leeds, UK", "balanced")
 #' }
 #'
-route_cyclestreet <- function(from, to, plan = "fastest", silent = TRUE, pat = NULL,
-                              base_url = "http://www.cyclestreets.net", reporterrors = TRUE,
+route_cyclestreet <-
+  route_cyclestreets <- function(from, to, plan = "fastest", silent = TRUE, pat = NULL,
+                              base_url = "https://www.cyclestreets.net", reporterrors = TRUE,
                               save_raw = "FALSE"){
 
   # Convert sp object to lat/lon vector
@@ -133,15 +121,15 @@ route_cyclestreet <- function(from, to, plan = "fastest", silent = TRUE, pat = N
   httrreq <- httr::GET(httrmsg)
 
   if (grepl('application/json', httrreq$headers$`content-type`) == FALSE) {
-    stop("Error: Cyclestreets did not return a valid result")
+    stop("Error: CycleStreets did not return a valid result")
   }
 
   txt <- httr::content(httrreq, as = "text", encoding = "UTF-8")
   if (txt == "") {
-    stop("Error: Cyclestreets did not return a valid result")
+    stop("Error: CycleStreets did not return a valid result")
   }
 
-  obj <- jsonlite::fromJSON(txt)
+  obj <- jsonlite::fromJSON(txt, simplifyDataFrame = TRUE)
 
   if (is.element("error", names(obj))) {
     stop(paste0("Error: ", obj$error))
@@ -193,7 +181,7 @@ route_cyclestreet <- function(from, to, plan = "fastest", silent = TRUE, pat = N
 
     row.names(df) <- route@lines[[1]]@ID
     route <- sp::SpatialLinesDataFrame(route, df)
-    proj4string(route) <- CRS("+init=epsg:4326")
+    sp::proj4string(route) <- sp::CRS("+init=epsg:4326")
     route
   }
 }
@@ -234,7 +222,7 @@ route_cyclestreet <- function(from, to, plan = "fastest", silent = TRUE, pat = N
 #' @seealso route_cyclestreet
 #' @examples
 #' \dontrun{
-#' r <- route_graphhopper(from = "Leeds", to = "Dublin", vehicle = "bike")
+#' r <- route_graphhopper(from = "Leeds, UK", to = "Dublin, Ireland", vehicle = "bike")
 #' r@data
 #' plot(r)
 #' r <- route_graphhopper("New York", "Washington", vehicle = "foot")
@@ -305,7 +293,7 @@ route_graphhopper <- function(from, to, vehicle = "bike", silent = TRUE, pat = N
   )
 
   route <- sp::SpatialLinesDataFrame(route, df)
-  proj4string(route) <- CRS("+init=epsg:4326")
+  sp::proj4string(route) <- sp::CRS("+init=epsg:4326")
   route
 
 }
