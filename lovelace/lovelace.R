@@ -7,13 +7,17 @@ knitr::opts_chunk$set(fig.width = 7, fig.height = 5)
 ## ------------------------------------------------------------------------
 library(stplanr)
 
+if(dir.exists("vignettes/")) {
+  setwd("vignettes/")
+}
+
 ## ---- echo=FALSE, results='asis', message=FALSE--------------------------
 # stplanr_funs = ls("package:stplanr")
 # sel_core = grep(pattern = "od_|^line_|route_", x = stplanr_funs)
 # core_funs = stplanr_funs[sel_core]
 # args(name = core_funs[1])
 fun_table <- readr::read_csv("fun_table.csv")
-knitr::kable(fun_table, caption = "Selection of functions for working with or generating OD, line and route data types.") 
+knitr::kable(fun_table, caption = "Selection of functions for working with or generating OD, line and route data types.")
 
 ## ---- eval=FALSE---------------------------------------------------------
 ## dl_stats19() # download and extract stats19 road traffic casualty data
@@ -64,7 +68,7 @@ as.data.frame(cents[1:3, -c(3,4)])
 l <- od2line(flow = flow, zones = cents)
 
 ## ---- eval=FALSE---------------------------------------------------------
-## route_bl <- route_cyclestreet(from = "Bradford", to = "Leeds")
+## route_bl <- route_cyclestreet(from = "Bradford, Yorkshire", to = "Leeds, Yorkshire")
 ## route_c1_c2 <- route_cyclestreet(cents[1,], cents[2,])
 
 ## ---- eval=FALSE---------------------------------------------------------
@@ -91,7 +95,7 @@ plot(rnet, lwd = rnet$flow / mean(rnet$flow))
 ## print.xtable(xtnyoa, include.rownames = FALSE)
 ## plot(ny2oaxaca1)
 ## plot(ny2oaxaca2, add = TRUE, col = "red")
-## 
+##
 ## ny2oaxaca1@data
 ## ny2oaxaca2@data
 
@@ -181,7 +185,7 @@ plot(l$d_euclidean, l$pwalk, cex = l$All / 50,
 ## ------------------------------------------------------------------------
 lm1 <- lm(pwalk ~ d_euclidean, data = l@data, weights = All)
 lm2 <- lm(pwalk ~ d_rf, data = l@data, weights = All)
-lm3 <- glm(pwalk ~ d_rf + I(d_rf^0.5), 
+lm3 <- glm(pwalk ~ d_rf + I(d_rf^0.5),
            data = l@data, weights = All, family = quasipoisson(link = "log"))
 
 ## ---- echo=FALSE, eval=FALSE---------------------------------------------
@@ -200,3 +204,21 @@ lines(l2$d_euclidean, lm1p)
 lines(l2$d_euclidean, exp(lm2p), col = "green")
 lines(l2$d_euclidean, exp(lm3p), col = "red")
 
+library(nycflights13)
+data("airports")
+crs <- CRS("+init=epsg:4326")
+coords <- cbind(airports$lon, airports$lat)
+airports_sp <- SpatialPointsDataFrame(coords, airports, proj4string = crs)
+ny_buff <- buff_geo(shp = airports_sp[airports_sp$faa == "NYC",], width = 1e6)
+airports_near <- airports_sp[ny_buff,]
+flights_near <- flights[flights$dest %in% airports_near$faa,]
+flights_agg <- group_by(flights_near, origin, dest) %>%
+  summarise(Flights = n())
+flights_sp = od2line(flow = flights_agg, zones = airports_near)
+plot(flights_sp)
+
+library(tmap)
+tmap_mode("view")
+pal <- viridis(n = 3, option = "C")
+tm_shape(flights_sp) +
+  tm_lines(lwd = "Flights", col = "Flights", scale = 12, n = 3, palette = "YlGnBu")
