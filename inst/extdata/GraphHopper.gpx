@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" creator="Graphhopper version 0.10.0" version="1.1" xmlns:gh="https://graphhopper.com/public/schema/gpx/1.1">
+<metadata><copyright author="OpenStreetMap contributors"/><link href="http://graphhopper.com"><text>GraphHopper GPX</text></link><time>2018-04-08T09:20:59Z</time></metadata>
+<rte>
+<rtept lat="51.500005" lon="-0.120077"><extensions><gh:distance>41.3</gh:distance><gh:time>37195</gh:time><gh:direction>N</gh:direction><gh:azimuth>6.39</gh:azimuth><gh:sign>0</gh:sign></extensions></rtept>
+<rtept lat="51.500375" lon="-0.12001"><extensions><gh:distance>5.6</gh:distance><gh:time>10036</gh:time><gh:direction>E</gh:direction><gh:azimuth>96.75</gh:azimuth><gh:sign>2</gh:sign></extensions></rtept>
+<rtept lat="51.500369" lon="-0.119939"><extensions><gh:distance>35.8</gh:distance><gh:time>39775</gh:time><gh:direction>N</gh:direction><gh:azimuth>6.61</gh:azimuth><gh:sign>-2</gh:sign></extensions></rtept>
+<rtept lat="51.500689" lon="-0.11988"><extensions><gh:distance>39.5</gh:distance><gh:time>35514</gh:time><gh:direction>E</gh:direction><gh:azimuth>93.31</gh:azimuth><gh:sign>2</gh:sign></extensions></rtept>
+<rtept lat="51.500668" lon="-0.119311"><extensions><gh:distance>4.2</gh:distance><gh:time>3802</gh:time><gh:direction>N</gh:direction><gh:azimuth>359.82</gh:azimuth><gh:sign>-2</gh:sign></extensions></rtept>
+<rtept lat="51.500706" lon="-0.119311"><extensions><gh:distance>43.6</gh:distance><gh:time>8728</gh:time><gh:direction>W</gh:direction><gh:azimuth>272.87</gh:azimuth><gh:sign>-2</gh:sign></extensions></rtept>
+<rtept lat="51.500798" lon="-0.119874"><desc>turn left onto Westminster Bridge Road, A302</desc><extensions><gh:distance>220.0</gh:distance><gh:time>44004</gh:time><gh:direction>W</gh:direction><gh:azimuth>273.23</gh:azimuth><gh:sign>-2</gh:sign></extensions></rtept>
+<rtept lat="51.500868" lon="-0.12303"><extensions><gh:distance>1121.8</gh:distance><gh:time>247745</gh:time><gh:direction>W</gh:direction><gh:azimuth>252.9</gh:azimuth><gh:sign>-7</gh:sign></extensions></rtept>
+<rtept lat="51.50045" lon="-0.138949"><extensions><gh:distance>7.9</gh:distance><gh:time>1574</gh:time><gh:direction>S</gh:direction><gh:azimuth>198.72</gh:azimuth><gh:sign>-2</gh:sign></extensions></rtept>
+<rtept lat="51.500383" lon="-0.138985"><desc>turn right onto Birdcage Walk</desc><extensions><gh:distance>76.9</gh:distance><gh:time>16228</gh:time><gh:direction>W</gh:direction><gh:azimuth>260.82</gh:azimuth><gh:sign>2</gh:sign></extensions></rtept>
+<rtept lat="51.500273" lon="-0.140081"><extensions><gh:distance>0.0</gh:distance><gh:time>0</gh:time><gh:sign>4</gh:sign></extensions></rtept>
+</rte>
+<trk><name>GraphHopper Track</name><trkseg>
+<trkpt lat="51.500005" lon="-0.120077"><time>2018-04-08T09:20:59Z</time></trkpt>
+<trkpt lat="51.500375" lon="-0.12001"><time>2018-04-08T09:21:36Z</time></trkpt>
+<trkpt lat="51.500369" lon="-0.119939"><time>2018-04-08T09:21:46Z</time></trkpt>
+<trkpt lat="51.500689" lon="-0.11988"><time>2018-04-08T09:22:26Z</time></trkpt>
+<trkpt lat="51.500668" lon="-0.119311"><time>2018-04-08T09:23:02Z</time></trkpt>
+<trkpt lat="51.500706" lon="-0.119311"><time>2018-04-08T09:23:05Z</time></trkpt>
+<trkpt lat="51.500721" lon="-0.119794"><time>2018-04-08T09:23:12Z</time></trkpt>
+<trkpt lat="51.500798" lon="-0.119874"><time>2018-04-08T09:23:14Z</time></trkpt>
+<trkpt lat="51.500899" lon="-0.122757"><time>2018-04-08T09:23:54Z</time></trkpt>
+<trkpt lat="51.500865" lon="-0.122834"><time>2018-04-08T09:23:55Z</time></trkpt>
+<trkpt lat="51.500868" lon="-0.12303"><time>2018-04-08T09:23:58Z</time></trkpt>
+<trkpt lat="51.500838" lon="-0.123185"><time>2018-04-08T09:24:01Z</time></trkpt>
+<trkpt lat="51.500842" lon="-0.123582"><time>2018-04-08T09:24:07Z</time></trkpt>
+<trkpt lat="51.50088" lon="-0.124435"><time>2018-04-08T09:24:20Z</time></trkpt>
+<trkpt lat="51.500903" lon="-0.124629"><time>2018-04-08T09:24:23Z</time></trkpt>
+<trkpt lat="51.500911" lon="-0.126146"><time>2018-04-08T09:24:46Z</time></trkpt>
+<trkpt lat="51.500983" lon="-0.127197"><time>2018-04-08T09:25:02Z</time></trkpt>
+<trkpt lat="51.50113" lon="-0.12737"><time>2018-04-08T09:25:07Z</time></trkpt>
+<trkpt lat="51.501144" lon="-0.12746"><time>2018-04-08T09:25:08Z</time></trkpt>
+<trkpt lat="51.501321" lon="-0.129802"><time>2018-04-08T09:25:44Z</time></trkpt>
+<trkpt lat="51.501324" lon="-0.130128"><time>2018-04-08T09:25:49Z</time></trkpt>
+<trkpt lat="51.501301" lon="-0.130724"><time>2018-04-08T09:25:58Z</time></trkpt>
+<trkpt lat="51.501206" lon="-0.131731"><time>2018-04-08T09:26:14Z</time></trkpt>
+<trkpt lat="51.500963" lon="-0.133874"><time>2018-04-08T09:26:47Z</time></trkpt>
+<trkpt lat="51.500444" lon="-0.138817"><time>2018-04-08T09:28:04Z</time></trkpt>
+<trkpt lat="51.50045" lon="-0.138949"><time>2018-04-08T09:28:06Z</time></trkpt>
+<trkpt lat="51.500383" lon="-0.138985"><time>2018-04-08T09:28:07Z</time></trkpt>
+<trkpt lat="51.500273" lon="-0.140081"><time>2018-04-08T09:28:24Z</time></trkpt>
+</trkseg>
+</trk>
+</gpx>
