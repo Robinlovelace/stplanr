@@ -191,16 +191,7 @@ install.packages("stplanr")
 \begin{Sinput}
 library(stplanr)
 \end{Sinput}
-\begin{Soutput}
-#> Loading required package: sp
-\end{Soutput}
 \end{Schunk}
-
-As illustrated by the message emitted when \textbf{stplanr} is loaded,
-it depends on \CRANpkg{sp}. This means that the spatial data classes
-commonly used in the package will work with generic R functions such as
-\texttt{summary}, \texttt{aggregate} and, as illustrated in the figures
-below, \texttt{plot} \citep{bivand_applied_2013}.
 
 \subsection{Core functions and
 classes}\label{core-functions-and-classes}
@@ -677,6 +668,8 @@ Car  &   2759.89 & 4754772 & NA\tabularnewline
 \label{tab:xtnyoa}
 \end{longtable}
 
+\newpage
+
 \subsection{Modelling travel catchment
 areas}\label{modelling-travel-catchment-areas}
 
@@ -1147,23 +1140,16 @@ opportunities in this direction, including:
 \tightlist
 \item
   Functions to assess the environment surrounding routes, e.g.~via
-  integration with the in-development \textbf{osmdata} package.
-\item
-  Functions to match different GIS routes, perhaps building on the
-  Hausdorf distance algorithm implemented in the \CRANpkg{rgeos}
-  function \texttt{gDistance}.
+  integration \CRANpkg{osmdata} package.
 \item
   Additional functions for route-allocation of travel, e.g.~via an
   interface to the OpenTripPlanner API.
 \item
-  Functions for aggregating very large GPS trace datasets (e.g.~into
+  Functions for aggregating large GPS trace datasets (e.g.~into
   raster cells) for anonymisation and analysis/visualisation purposes.
 \item
-  The creation of a class system for spatial transport datasets, such as
-  to represent spatial route and a route networks (perhaps with classes
-  named \code{"sr"} and \code{"srn"}). This is not a short-term priority
-  and it would be beneficial to coincide such developments to a
-  migration to \CRANpkg{sf} for spatial classes.
+  Integration with spatial network analysis software such as sDNA
+  \citep{cooper_predictive_2018} and \CRANpkg{dodgr}.
 \end{itemize}
 
 Such spatial data processing capabilities would increase the range of
@@ -1176,14 +1162,14 @@ improve the usability of the package. For this reason, much future work
 in \textbf{stplanr} will go into improving documentation and
 user-friendliness.
 
-Like much open source software \textbf{stplanr} is an open-ended
-project, a work-in-progress. We have set out clear motivations for
-developing transport planning capabilities in R and believe that the
-current version of \textbf{stplanr} (0.1.6) provides a major step in
-that direction compared with what was available a couple of years ago.
-But there is much more to do. We therefore welcome input on where the
-package's priorities should lie, how it should evolve in the future and
-how to ensure it is well-developed and sustained.
+% Like much open source software \textbf{stplanr} is an open-ended
+% project, a work-in-progress. We have set out clear motivations for
+% developing transport planning capabilities in R and believe that the
+% current version of \textbf{stplanr} (0.2.5) provides a major step in
+% that direction.
+% There is much more to do and welcome input on where the
+% package's priorities should lie, how it should evolve in the future and
+% how to ensure it is well-developed and sustained.
 
 \section{Acknowledgements}
 
