@@ -14,24 +14,42 @@ txt2coords = function(txt) { # helper function to document...
 #' obj = jsonlite::read_json("inst/extdata/res_json.json", simplifyVector = T)
 #' rsf = json2sf_cs(obj)
 #' sf:::plot.sf(rsf)
-json2sf_cs <- function(obj) {
+json2sf_cs <- function(obj, cols, default_crs) {
   coord_list = lapply(obj$marker$`@attributes`$points[-1], txt2coords)
   rsflx = lapply(coord_list, sf::st_linestring)
   rsfl = sf::st_sfc(rsflx)
-
-  b = sapply(obj$marker$`@attributes`$busynance[-1], as.numeric)
-  n = obj$marker$`@attributes`$name[-1]
-
+  
+  # variables 
+  # useful cols: busynance, name, elevations, distances, turn,provisionName
+  
+  busynance = sapply(obj$marker$`@attributes`$busynance[-1], as.numeric)
+  name = obj$marker$`@attributes`$name[-1]
+  elevations = stringr::str_split(obj$marker$`@attributes`$elevations[-1],pattern = ",") %>%
+      lapply(as.numeric) %>%
+      lapply(mean) %>%
+      unlist()
+  distance = sapply(obj$marker$`@attributes`$distance[-1],as.numeric)
+  turn = obj$marker$`@attributes`$turn[-1]
+  provisionName = obj$marker$`@attributes`$provisionName[-1]
+  # put in a df
+  d = data.frame(busynance, name, elevations, distance,
+             turn, provisionName)
   # todo: create more segment-level statistics (vectors) +
   # add them to the data frame (d) below
-
-  d = data.frame(busynance = b, name = n)
-
-  rsf = sf::st_sf(d, geometry = rsfl)
-
+  if(!missing(cols)){
+    d = d[,cols]
+  } 
+  else {
+    d 
+  }
+  rsf = sf::st_sf(d, geometry = rsfl, crs = if(default_crs){4326}else{NA})
   return(rsf)
-
 }
+
+# test calls
+# json2sf_cs(res_json,default_crs = T)
+# json2sf_cs(res_json,default_crs = F, cols = c("distance", "turn","name","busynance"))
+
 
 # test code (to delete / tidy) ----
 # res_json = jsonlite::read_json("inst/extdata/res_json.json", simplifyVector = T)
