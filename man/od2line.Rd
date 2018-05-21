@@ -65,7 +65,7 @@ newflowlines2 <- od2line2(flow = flow, zones = cents)
 plot(cents)
 lines(newflowlines, lwd = 3)
 lines(newflowlines2, col = "white")
-nfl_sldf <- SpatialLinesDataFrame(newflowlines, flow, match.ID = FALSE)
+nfl_sldf <- sp::SpatialLinesDataFrame(newflowlines, flow, match.ID = FALSE)
 identical(nfl_sldf, newflowlines)
 # When destinations are different
 data(destinations)
@@ -73,4 +73,5 @@ head(flow_dests[1:5]) # check data
 head(destinations@data[1:5])
 flowlines_dests = od2line(flow_dests, cents, destinations = destinations, silent = FALSE)
 plot(flowlines_dests)
+nfl_sf <- od2line(flow, zones_sf)
 }

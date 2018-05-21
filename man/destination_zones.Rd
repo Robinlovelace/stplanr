@@ -4,8 +4,9 @@
 \name{destination_zones}
 \alias{destination_zones}
 \alias{destinations}
+\alias{destinations_sf}
 \title{example destinations data}
-\format{A SpatialPolygonsDataFrame with 87 features}
+\format{A spatial dataset with 87 features}
 \usage{
 data(destination_zones)
 }
@@ -24,14 +25,16 @@ wz = raster::shapefile("COWZ_EW_2011_BFC.shp")
 to_remove = list.files(pattern = "COWZ", full.names = TRUE, recursive = TRUE)
 file.remove(to_remove)
 proj4string(wz)
-wz = spTransform(wz, proj4string(zones))
+wz = sp::spTransform(wz, proj4string(zones))
 destination_zones = wz[zones,]
 plot(destination_zones)
 devtools::use_data(destination_zones)
 head(destination_zones@data)
 destinations = rgeos::gCentroid(destinations, byid = TRUE)
-destinations = SpatialPointsDataFrame(destinations, destination_zones@data)
+destinations = sp::SpatialPointsDataFrame(destinations, destination_zones@data)
 devtools::use_data(destinations, overwrite = TRUE)
+destinations_sf = sf::st_as_sf(destinations)
+devtools::use_data(destinations_sf)
 }
 }
 \keyword{datasets}

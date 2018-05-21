@@ -7,7 +7,7 @@
 line_bearing(l, bidirectional = FALSE)
 }
 \arguments{
-\item{l}{A SpatialLinesDataFrame}
+\item{l}{A spatial lines object}
 
 \item{bidirectional}{Should the result be returned in a bidirectional format?
 Default is FALSE. If TRUE, the same line in the oposite direction would have the same bearing}
@@ -25,4 +25,5 @@ data(flowlines)
 b1 <- line_bearing(flowlines)
 b2 <- line_bearing(flowlines, bidirectional = TRUE)
 plot(b1, b2)
+line_bearing(flowlines_sf[1:9, ])
 }

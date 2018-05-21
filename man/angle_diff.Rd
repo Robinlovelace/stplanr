@@ -7,7 +7,7 @@
 angle_diff(l, angle, bidirectional = FALSE, absolute = TRUE)
 }
 \arguments{
-\item{l}{A SpatialLinesDataFrame}
+\item{l}{A spatial lines object}
 
 \item{angle}{an angle in degrees relative to North, with 90 being East and -90 being West.
 (direction of rotation is ignored).}
@@ -35,6 +35,7 @@ plot(flowlines)
 plot(flowlines[a < 15,], add = TRUE, lwd = 3, col = "red")
 # East-West
 plot(flowlines[a > 75,], add = TRUE, lwd = 3, col = "green")
+angle_diff(flowlines_sf[2, ], angle = 0)
 }
 \author{
 Robin Lovelace and Malcolm Morgan

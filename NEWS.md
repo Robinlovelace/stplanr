@@ -1,3 +1,58 @@
+# stplanr 0.2.4.9000
+
+# stplanr 0.2.4
+
+## NEW FEATURES
+
+* New function `geo_length()` returns numeric vector of line lengths from **sp** or **sf** objects.
+
+## DOCUMENTATION
+
+- `?route_graphhopper` no longer mentions the depreciated 'bike2' profile - see [#246](https://github.com/ropensci/stplanr/issues/246)
+- `?route_osrm` mentions that the public API only routes for cars - see [#246](https://github.com/ropensci/stplanr/issues/246)
+- Updated `introducing-stplanr` vignette to show new function and make more robust
+
+# stplanr 0.2.3
+
+## NEW FEATURES
+
+* **stplanr** now imports **lwgeom**, needed for `sf::st_length()`, used in `SpatialLinesNetwork()`.
+* Plotting behaviour updated for `sfNetwork` objects: now only plots the geometry by default.
+* Improved documentation for `SpatialLinesNetwork()` and `plot()` for spatial networks.
+
+## BUG FIXES
+
+* Bug in `sum_network_routes()` fixed (see [#240](https://github.com/ropensci/stplanr/issues/240)).
+
+# stplanr 0.2.2
+
+## NEW FEATURES
+
+* In this release **sp** is demoted from a Depends to an Imports, meaning that all its functions will not be attached to your namespace (it will not be loaded) when you run `library(stplanr)`, making it less tied to **sp**. This is a continuation of the work to support **sf** and will make it easier for the package to work with alternative representations of geographic data.
+
+## BUG FIXES
+
+* Bug in `geo_select_aeq.sf()` was fixed by Jakub Nowosad in pull [#238](https://github.com/ropensci/stplanr/pull/238)
+* An issue with `od_aggregate.sf()` was fixed making it much faster
+
+# stplanr 0.2.0
+
+## NEW FEATURES
+
+* This is the largest release since the package was created, with dozens of changes to support simple features - see https://github.com/ropensci/stplanr/pull/198 for details.
+* Support for **sf**. The package now support the new spatial class system for most functions.
+* New function `geo_bb()` supercedes `bb2poly()`. The new function can return polygons, points and matrix objects determined by the `output` argument. It also allows bounding boxes to be extended in metres, and scaled in x and y dimensions.
+* `geo_code()` now uses nominatim by default to find locations on the maps.
+* New function `od_coords()` takes a wide range of input data types to return a consistent output representing OD data as a data frame of origin and destination coordinates. This is used behind the scenes to make other functions more modular.
+
+## WORK IN PROGRESS
+
+Plans for the next release
+
+* New generic `route()` function for routing. This is more flexible and user-friendly than the existing `line2route()` and `route_*()` functions it enhances.
+* Updated function names to make using **stplanr** easier and more intuitive.
+
+
 # stplanr 0.1.9
 
 ## NEW FEATURES
