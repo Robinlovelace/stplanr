@@ -6,29 +6,21 @@
 
 \abstract{%
 Tools for transport planning should be flexible, transparent and scalable.
-The \textbf{stplanr} package provides such tools, with an emphasis on spatial transport data and non-motorized modes.
-\textbf{stplanr} facilitates common transport planning tasks including:
+\textbf{stplanr} provides such tools, with an emphasis on spatia data and common transport planning tasks including:
 downloading and cleaning transport datasets;
 creating geographic `desire lines' from origin-destination (OD) data;
 route assignment, via the \code{SpatialLinesNetwork} class and
 interfaces to routing services such as CycleStreets.net;
 calculation of route segment attributes such as bearing and aggregate flow;
 and `travel watershed' analysis.
-This paper demonstrates this functionality using reproducible examples on real transport
-datasets.
-More broadly, the experience shows R can form the basis of an open source and reproducible
-transport planning workflow.
-We argue that this approach is more democratic than
-the current approach which is heavily reliant on proprietary and inaccessible software.
+This functionality is demonstrated with reproducible examples on real transport datasets.
+We conclude that R can form the basis of an open source and reproducible transport planning workflow and discuss next steps to encourage its wider uptake in practice.
 }
 
 \section{Introduction}\label{introduction}
 
-The practice of transport planning can been defined as
-"preparing, assessing and implementing policies, plans and projects to
-improve and manage our transport systems"
-\citep{jones_road_2014}.
-This inevitably involves judgments based on intuition, experience and political considerations.
+The practice of transport planning can been defined as "preparing, assessing and implementing policies, plans and projects to improve and manage our transport systems" \citep{jones_road_2014}.
+This inevitably involves judgments based on intuition and experience.
 However, with the push for evidence-based policy, the pressure to adopt scientific methods has grown.
 This includes the development and use of open source software \citep{balmer_matsim-t:_2009}.
 Transport planning is a diverse field with diverse software requirements \citep{boyce_forecasting_2015}, but the following generalisations can be made.

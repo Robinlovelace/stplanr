@@ -7,16 +7,12 @@ knitr::opts_chunk$set(fig.width = 7, fig.height = 5)
 ## ------------------------------------------------------------------------
 library(stplanr)
 
-if(dir.exists("vignettes/")) {
-  setwd("vignettes/")
-}
-
 ## ---- echo=FALSE, results='asis', message=FALSE--------------------------
 # stplanr_funs = ls("package:stplanr")
 # sel_core = grep(pattern = "od_|^line_|route_", x = stplanr_funs)
 # core_funs = stplanr_funs[sel_core]
 # args(name = core_funs[1])
-fun_table <- readr::read_csv("fun_table.csv")
+fun_table <- readr::read_csv("https://github.com/ropensci/stplanr/raw/master/vignettes/fun_table.csv")
 knitr::kable(fun_table, caption = "Selection of functions for working with or generating OD, line and route data types.")
 
 ## ---- eval=FALSE---------------------------------------------------------
@@ -44,6 +40,9 @@ knitr::kable(fun_table, caption = "Selection of functions for working with or ge
 
 ## ---- echo=FALSE---------------------------------------------------------
 bb <- bb2poly(route_network)
+if(!file.exists("reqfiles.RData")){
+  download.file("https://github.com/Robinlovelace/stplanr/blob/rjournal-responses/lovelace/reqfiles.RData?raw=true", "reqfiles.RData")
+}
 load("reqfiles.RData")
 
 ## ---- message=FALSE------------------------------------------------------
@@ -55,6 +54,66 @@ plot(bb, lty = 4)
 plot(rnet_buff_100, col = "grey", add = TRUE)
 points(ca_local, pch = 4)
 points(ca_buff, cex = 3)
+
+
+# # Reproduce bikedata figure -----------------------------------------------
+#
+# library(bikedata)
+# dl_bikedata(city = "ny", data_dir = "bikedata-ny", dates = "201610")
+# store_bikedata(city = "ny", bikedb = 'bikedb', quiet = FALSE, dates = "201610")
+# stns <- bike_stations('bikedb', city = 'ny')
+# ntrips <- bike_tripmat('bikedb', city = 'ny', long = TRUE)
+#
+# unknownstns <- stns[which(stns$longitude == 0 & stns$latitude == 0),]$stn_id
+# stns <- stns[which(!stns$stn_id %in% unknownstns),]
+# ntrips <- ntrips[which(!ntrips$start_station_id %in% unknownstns),]
+# ntrips <- ntrips[which(!ntrips$end_station_id %in% unknownstns),]
+#
+# xlims_ny <- range(stns$longitude)
+# ylims_ny <- range(stns$latitude)
+#
+# # expand those limits slightly
+# ex <- 0.1
+# xlims_ny <- xlims_ny + c (-ex, ex) * diff (xlims_ny)
+# ylims_ny <- ylims_ny + c (-ex, ex) * diff (ylims_ny)
+# bbox <- c (xlims_ny [1], ylims_ny [1], xlims_ny [2], ylims_ny [2])
+# # Then the actual osmdata query to extract all OpenStreetMap highways
+# highways <- osmdata::opq (bbox = bbox) %>%
+#   osmdata::add_feature (key = 'highway') %>% osmdata::osmdata_sf()
+#
+# nynet <- SpatialLinesNetwork(highways$osm_lines)
+# nodeid <- find_network_nodes(nynet, stns$longitude, stns$latitude)
+#
+# startid <- nodeid [match (ntrips$start_station_id, stns$stn_id)]
+# endid <- nodeid [match (ntrips$end_station_id, stns$stn_id)]
+# ntrips$start_station_id <- startid
+# ntrips$end_station_id <- endid
+#
+# bike_usage <- sum_network_links (nynet, data.frame (ntrips))
+#
+# waterways <- osmdata::opq(bbox = bbox) %>%
+#   osmdata::add_feature(key = 'waterway') %>% osmdata::osmdata_sf()
+#
+# tm_shape(waterways$osm_multipolygons,
+#          bbox = matrix(c(-74.045141,40.681830,-73.92065,40.80502),nrow = 2)) +
+#   tm_fill(col="#000011") +
+#   tm_shape(waterways$osm_polygons) +
+#   tm_fill(col="#000011") +
+#   tm_shape(waterways$osm_lines) +
+#   tm_lines(col="#000011") +
+#   tm_shape(bike_usage) +
+#   tm_lines(col="numtrips",
+#            lwd="numtrips",
+#            title.col = "Number of trips",
+#            legend.lwd.show = FALSE,
+#            scale = 2) +
+#   tm_layout(
+#     bg.color = "black",
+#     legend.position = c("left","top"),
+#     legend.bg.color = "white",
+#     legend.bg.alpha = 0.5
+#   )
+
 
 ## ------------------------------------------------------------------------
 data("flow", package = "stplanr")
