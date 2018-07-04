@@ -8,6 +8,7 @@
 #'
 #' @param zip_url The url where the data is stored
 #' @param data_dir Directory to which to download the file
+#' @aliases dl_stats19_2016
 #' @export
 #' @examples
 #' \dontrun{
@@ -32,6 +33,15 @@ dl_stats19 <- function(zip_url = paste0("http://data.dft.gov.uk.s3.amazonaws.com
   print(paste0("Data saved at: ", list.files(data_dir,
               pattern = "csv", full.names = TRUE)))
 
+}
+dl_stats19_2016 <- function(data_dir = tempdir()){
+  zip_url = "http://data.dft.gov.uk/road-accidents-safety-data/dftRoadSafety_Accidents_2016.zip"
+  destfile <- file.path(data_dir, "Stats19_Data_2016.zip")
+  download.file(zip_url, destfile)
+  unzip(destfile, exdir = data_dir)
+
+  print(paste0("Data saved at: ", list.files(data_dir,
+                                             pattern = "csv", full.names = TRUE)))
 }
 
 #' Import and format UK 'Stats19' road traffic casualty data
