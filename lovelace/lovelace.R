@@ -33,7 +33,7 @@ knitr::kable(fun_table, caption = "Selection of functions for working with or ge
 ## ca_cycle <- ca_ac %>%
 ##   filter(Casualty_Severity == "Fatal" & !is.na(Latitude)) %>%
 ##   select(Age = Age_of_Casualty, Mode = Casualty_Type, Longitude, Latitude)
-## ca_sp <- SpatialPointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
+## ca_sp <- sp::PointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
 
 ## ---- eval=FALSE---------------------------------------------------------
 ## data("route_network") # devtools::install_github("ropensci/splanr")version 0.1.7
@@ -206,19 +206,19 @@ lines(l2$d_euclidean, exp(lm3p), col = "red")
 
 library(nycflights13)
 data("airports")
-crs <- CRS("+init=epsg:4326")
+crs <- sp::CRS("+init=epsg:4326")
 coords <- cbind(airports$lon, airports$lat)
-airports_sp <- SpatialPointsDataFrame(coords, airports, proj4string = crs)
+airports_sp <- sp::SpatialPointsDataFrame(coords, airports, proj4string = crs)
 ny_buff <- buff_geo(shp = airports_sp[airports_sp$faa == "NYC",], width = 1e6)
 airports_near <- airports_sp[ny_buff,]
 flights_near <- flights[flights$dest %in% airports_near$faa,]
-flights_agg <- group_by(flights_near, origin, dest) %>%
-  summarise(Flights = n())
+flights_agg <- dplyr::group_by(flights_near, origin, dest) %>%
+  dplyr::summarise(Flights = n())
 flights_sp = od2line(flow = flights_agg, zones = airports_near)
 plot(flights_sp)
 
 library(tmap)
 tmap_mode("view")
-pal <- viridis(n = 3, option = "C")
+pal <- viridis::viridis(n = 3, option = "C")
 tm_shape(flights_sp) +
   tm_lines(lwd = "Flights", col = "Flights", scale = 12, n = 3, palette = "YlGnBu")
