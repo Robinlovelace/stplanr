@@ -251,7 +251,7 @@ spatial transport data:
 A convention has been developed whereby function names are
 prefixed depending on the the input data type
 (\texttt{od\_}, \texttt{line\_} and
-\texttt{route\_} respectively). A selection of these is presented in
+\texttt{route\_} respectively, although \texttt{route\_} functions do not take routes as inputs, they output them). A selection of these is presented in
 Table 1 (\texttt{lsf.str("package:stplanr")} returns a list of all functions).
 Additional `core functions' could be developed, such as those
 prefixed with \texttt{rn\_} (for working with route network data) and
@@ -281,34 +281,20 @@ lines\tabularnewline
 \bottomrule
 \end{longtable}
 
-With a tip of the hat to the concept of type stability (e.g.~as
-implemented in \CRANpkg{dplyr}), we would like
-\textbf{stplanr} function type-stable in future releases.
-A systematic way to do this would be to define `core' functions
-as those which begin with the prefixes listed above
-and ensure that these return objects with the same class as
-that of the input. However there are limitations to this approach: it
-risks breaking existing functionality and outputting objects with a
-larger size than necessary.
-\texttt{line\_bearing}, for example, does
-not need to duplicate the spatial data contained in its input.
-Instead,
-we plan to continue to name functions around the type of \emph{input}
-data they take, but are open minded about input-output data
-class conventions.
+We aim for type stability in some functions:
+\texttt{line2route}, for example, takes spatial lines objects and returns spatial lines objects.
+Type stability has its limitations with spatial data, however:
+it would be wasteful for functions such as \texttt{line\_bearing} (which returns the bearing of a line) to duplicate the spatial data contained in its input, for instance.
 Generic classes enable \textbf{stplanr} to
-handle objects of class \texttt{sf} from the new \CRANpkg{sf} package without affecting how it handles
-objects generated using \CRANpkg{sp}.
+handle objects of class \texttt{sf} from the new \CRANpkg{sf} package
+in a type stable way.
 
 A class system has not been developed for each data type (this option is
-discussed in the final section). The most common data types used in
-\textbf{stplanr} are assumed to be data frames and spatial datasets.
-
-Transport datasets are very diverse. There are therefore many other
-functions which have more ad-hoc names. Rather than attempting a systematic
-description of each of \textbf{stplanr}'s functions
-(these can be found at \href{https://ropensci.github.io/stplanr/reference/index.html}{ropensci.github.io/stplanr}), the paper focuses on how some key functions can
-work together, as part of a transport planning workflow. This begins with data access and ends with visualisation.
+discussed in the final section) and more classes would be possible:
+transport datasets are diverse.
+This diversity helps explain why some functions have more ad-hoc names.
+Rather than attempting a systematic
+description of each of \textbf{stplanr}'s functions, the remainder of this paper shows how the package can be used for transport planning, beginning with data access and ending with visualisation.
 
 \subsection{Road traffic casualty data}\label{accessing-and-processing-transport-data}
 
