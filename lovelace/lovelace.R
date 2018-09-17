@@ -1,17 +1,10 @@
-## ---- echo=FALSE---------------------------------------------------------
-knitr::opts_chunk$set(fig.width = 7, fig.height = 5)
-
-## ---- eval=FALSE---------------------------------------------------------
 ## install.packages("stplanr")
-
-## ------------------------------------------------------------------------
 library(stplanr)
 
 if(dir.exists("vignettes/")) {
   setwd("vignettes/")
 }
 
-## ---- echo=FALSE, results='asis', message=FALSE--------------------------
 # stplanr_funs = ls("package:stplanr")
 # sel_core = grep(pattern = "od_|^line_|route_", x = stplanr_funs)
 # core_funs = stplanr_funs[sel_core]
@@ -19,21 +12,20 @@ if(dir.exists("vignettes/")) {
 fun_table <- readr::read_csv("fun_table.csv")
 knitr::kable(fun_table, caption = "Selection of functions for working with or generating OD, line and route data types.")
 
-## ---- eval=FALSE---------------------------------------------------------
-## dl_stats19() # download and extract stats19 road traffic casualty data
+dl_stats19() # download and extract stats19 road traffic casualty data
 
-## ---- eval=FALSE---------------------------------------------------------
-## ac <- read_stats19_ac()
-## ca <- read_stats19_ca()
-## ve <- read_stats19_ve()
+ac <- read_stats19_ac()
+ca <- read_stats19_ca()
+ve <- read_stats19_ve()
 
-## ---- eval=FALSE---------------------------------------------------------
-## library(dplyr)
-## ca_ac <- inner_join(ca, ac)
-## ca_cycle <- ca_ac %>%
-##   filter(Casualty_Severity == "Fatal" & !is.na(Latitude)) %>%
-##   select(Age = Age_of_Casualty, Mode = Casualty_Type, Longitude, Latitude)
-## ca_sp <- sp::PointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
+library(dplyr)
+purrr::map(ac, class)
+summary(ac$Time)
+ca_ac <- inner_join(ca, ac)
+ca_cycle <- ca_ac %>%
+ filter(Casualty_Severity == "Fatal" & !is.na(Latitude)) %>%
+ select(Age = Age_of_Casualty, Mode = Casualty_Type, Longitude, Latitude)
+ca_sp <- sp::PointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
 
 ## ---- eval=FALSE---------------------------------------------------------
 ## data("route_network") # devtools::install_github("ropensci/splanr")version 0.1.7

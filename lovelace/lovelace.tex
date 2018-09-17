@@ -136,8 +136,7 @@ schema for classifying the kinds of task that \textbf{stplanr} can tackle:
   resulting `desire lines'
 \item
   The allocation of desire lines to roads and other guideways via
-  routing algorithms to show commonly used routes through geographical
-  space
+  routing services
 \item
   The aggregation of routes to estimate total levels of flow on segments
   throughout the transport network
@@ -217,10 +216,8 @@ library(stplanr)
 \end{Sinput}
 \end{Schunk}
 
-\textbf{stplanr} imports both \CRANpkg{sp} and its successor \CRANpkg{sf}, meaning that spatial objects
-commonly used in the package will work with generic R functions such as
-\texttt{summary}, \texttt{aggregate} and, as illustrated in the figures
-below, \texttt{plot} \citep{bivand_applied_2013}.
+\textbf{stplanr} imports both \CRANpkg{sp} and its successor \CRANpkg{sf}, meaning that spatial objects used in the package can be processed with base R functions such as
+\texttt{summary}, \texttt{aggregate} and \texttt{plot} \citep{bivand_applied_2013}.
 
 \subsection{Core functions and
 classes}\label{core-functions-and-classes}
@@ -298,22 +295,17 @@ description of each of \textbf{stplanr}'s functions, the remainder of this paper
 
 \subsection{Road traffic casualty data}\label{accessing-and-processing-transport-data}
 
-Gaining access to data is often the first stage in transport research.
-This is often a long and protracted process which is thankfully becoming
+Gaining access to data is often the problem in transport planning.
+It can be a long and protracted process but is becoming
 easier thanks to the `open data' movement and packages such as
-\textbf{tigris} for making data access from within R easier
+\textbf{tigris} and \CRANpkg{osmdata}
 \citep{walker_tigris:_2016}.
 
-\textbf{stplanr} provides a variety of different functions that
-facilitate importing common data formats used for transport analysis
-into R. Although transport analysis generally requires some
-transport-specific datasets, it also typically relies heavily on common
-sources of data including census data. This being the case,
-\textbf{stplanr} also includes functions that may be useful to those not
-involved in transport research. This includes the
-\texttt{read\_table\_builder} function for importing data from the
-Australian Bureau of Statistics (ABS) and the UK's Stats19 road traffic
-casualty dataset. A brief example of the latter is demonstrated below,
+\textbf{stplanr} helps import data with functions including
+\texttt{read\_table\_builder}, for importing data from the
+Australian Bureau of Statistics (ABS), and
+\texttt{dl_stats19} for downloading datasets from the UK's Stats19 road traffic
+casualty system. A brief example of the latter is demonstrated below,
 which begins with downloading the data (warning this downloads
 \textasciitilde{}100 MB of data):
 
