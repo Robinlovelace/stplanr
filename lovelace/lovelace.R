@@ -5,6 +5,7 @@ if(dir.exists("vignettes/")) {
   setwd("vignettes/")
 }
 
+
 # stplanr_funs = ls("package:stplanr")
 # sel_core = grep(pattern = "od_|^line_|route_", x = stplanr_funs)
 # core_funs = stplanr_funs[sel_core]
@@ -12,30 +13,29 @@ if(dir.exists("vignettes/")) {
 fun_table <- readr::read_csv("fun_table.csv")
 knitr::kable(fun_table, caption = "Selection of functions for working with or generating OD, line and route data types.")
 
-dl_stats19() # download and extract stats19 road traffic casualty data
 
-ac <- read_stats19_ac()
-ca <- read_stats19_ca()
-ve <- read_stats19_ve()
-
-library(dplyr)
-purrr::map(ac, class)
-summary(ac$Time)
-ca_ac <- inner_join(ca, ac)
-ca_cycle <- ca_ac %>%
- filter(Casualty_Severity == "Fatal" & !is.na(Latitude)) %>%
- select(Age = Age_of_Casualty, Mode = Casualty_Type, Longitude, Latitude)
-ca_sp <- sp::PointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
-
-## ---- eval=FALSE---------------------------------------------------------
-## data("route_network") # devtools::install_github("ropensci/splanr")version 0.1.7
-## proj4string(ca_sp) <- proj4string(route_network)
-## bb <- bb2poly(route_network)
-## proj4string(bb) <- proj4string(route_network)
-## ca_local <- ca_sp[bb,]
-
-## ---- echo=FALSE---------------------------------------------------------
-bb <- bb2poly(route_network)
+# Generate input data for paper (commented) -------------------------------
+# dl_stats19() # download and extract stats19 road traffic casualty data
+# ac <- read_stats19_ac()
+# ca <- read_stats19_ca()
+# ve <- read_stats19_ve()
+#
+# library(dplyr)
+# purrr::map(ac, class)
+# summary(ac$Time)
+# ca_ac <- inner_join(ca, ac)
+# ca_cycle <- ca_ac %>%
+#  filter(Casualty_Severity == "Fatal" & !is.na(Latitude)) %>%
+#  select(Age = Age_of_Casualty, Mode = Casualty_Type, Longitude, Latitude)
+# ca_sp <- sp::SpatialPointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
+#
+# data("route_network") # devtools::install_github("ropensci/splanr")
+# sp::proj4string(ca_sp) <- sp::proj4string(route_network)
+# bb <- bb2poly(route_network)
+# sp::proj4string(bb) <- sp::proj4string(route_network)
+# ca_local <- ca_sp[bb,]
+#
+# bb <- bb2poly(route_network)
 load("reqfiles.RData")
 
 ## ---- message=FALSE------------------------------------------------------
@@ -214,3 +214,4 @@ tmap_mode("view")
 pal <- viridis::viridis(n = 3, option = "C")
 tm_shape(flights_sp) +
   tm_lines(lwd = "Flights", col = "Flights", scale = 12, n = 3, palette = "YlGnBu")
+
