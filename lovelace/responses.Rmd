@@ -1,0 +1,253 @@
+---
+output:
+  pdf_document: 
+    keep_tex: true
+  html_document: default
+---
+
+# stplanr paper: Responses to reviewer's comments
+
+We thank the reviewers for constructive and detailed comments on the paper.
+In response we have made a wide range changes that improve the manuscript in many ways.
+There have been many changes focussed on improving readability and providing context, partly in response to the high-level comments of reviewer 1.
+These responses focus only on specific comments, to ensure that we dealt with them in a systematic manner. 
+
+To see the full list of changes please refer to this pull request which shows precisely what has changed in the source of the paper, line-by-line: https://github.com/Robinlovelace/stplanr/pull/4/ and https://github.com/Robinlovelace/stplanr/pull/10.
+
+For clarity we use the following conventions:
+
+- reviewers comments are numbered to ease future communications
+- our responses are *italic*
+- updated text and code is in a normal typeface enclosed in quote marks and `monotype` respectively
+
+Finally, a few closing comments are made to explain changes that have taken place that are not directly related to the specific comments.
+
+**Reviewer 1**
+
+1. I would although recommend towards
+the beginning of the paper an outline of what readers should expect
+to read in this manuscript.
+
+    - *We have included the following sentence (a modification of a previous sentence) which sets-out more clearly what the purpose and scope of the paper is:*
+    
+    - "This paper sets out to demonstrate, with numerous reproducible examples, that
+R can provide a foundation for transport planning software that meets
+each of these criteria."
+    
+
+    <!-- ```{r} -->
+    <!-- # Demonstrates code chunks that do not disrupt numbering system (to be removed) -->
+    <!-- 1:9 -->
+    <!-- ``` -->
+
+1. On page 2, there is a discussion regarding the automation of tasks
+  – and faster processing and analysis of data. While reading the
+  remainder of the paper there is a lack of consideration and discussion
+  of how large transport data is collected and stored, and how for some
+  users considerable efforts to clean data are required. How can newer
+  or less experienced R users more easily apply R, when not all data are
+  collected equally? Considering or incorporating these thoughts might
+  result in a wider usage of these tools in the transport community. If
+  the aim of this package is to provide transport planners with a toolbox
+  for transport analyses, I think that more attention to the flexibility
+  and adaptability of this tool for an international audience is needed.
+  
+    - *We have added discussion of the importance of scalability to the final section, with an entirely new paragraph, which begins as follows:*
+    - "Another desirable direction of travel is towards better support for large datasets."
+  
+1. I would recommend more commenting on code for the benefit of the
+  readers, for example why the “inner_join” function was used rather
+  than the merge function. Is the inner join function more efficient, etc.
+
+    - *This is a good suggestion - worth spelling out. The join functions are a good example of this as `inner_join()` has many advantages over `merge()` (as we have found in our own research). We now link to an excellent [article](http://zevross.com/blog/2014/04/30/mini-post-for-large-tables-in-r-dplyrs-function-inner_join-is-much-faster-than-merge/) on the subject in a footnote explaining the use of dplyr (the beginning of which is pasted below.*
+    - "Note the `inner_join` function from the **dplyr** package was used because it is substantially faster and more effective than the equivalent function"
+  
+1. I recommend discussing what, if any, limitations may arise from
+  using a third-party API such as Cyclestreets? Are users limited by
+  their number of routes before being charged per request, therefore
+  limiting the scope of project? Furthermore, you then mention that there
+  is a significant limitation associated with the Cyclestreets package,
+  namely that it is not a multimodal network. It is unclear whether the
+  API routing packages discussed below all overcome this limitation
+  and should be addressed. Also, do these packages model other modes
+  such as the public transit network?
+
+    - *This is a good suggestion: it is important to acknowledge that there are pros and cons of relying on external services and that offline routing maybe necessary for some applications. In response the following text has been added on the first mention of APIs in the main text (there has also been floated the possibility of the addition of `route_sln()` and `route_ino()` functions):*
+    - "Each approach has advantages: local routing functionality is fast and free,
+whereas online routing services can be more sophisticated (e.g. taking
+into account local traffic conditions) and work anywhere in the world
+without needing to download unwieldy datasets and new software libraries such
+as OSRM.
+A disadvantage of relying on online services is that they may break or change
+without warning in the future."
+    
+1. On page 7, in the modelling travel catchment areas, be careful
+  of the proper use of the terms access/accessibility.
+
+    - *This is an important distinction we had not picked up on and is worth using these with care. We have looked at the relevant literature and found this non-academic resource useful: https://www.quora.com/Whats-the-difference-between-access-and-accessibility . In any case we've taken care not to confuse the two. The most term 'accessibility', which is what the section is primarily about, is now defined in general terms and is distinguished from access later on in the text.*
+    
+1. Regarding the “calc_catchment” function that uses straight-line
+  distances, you demonstrate the importance of considering the
+  transit network for measuring catchment areas, so I recommend after
+  presenting the network catchment area method discussing when it would
+  be appropriate to use the straight-line method despite loss of accuracy.
+
+    - *We agree that this would be a useful addition. We have added the following immediately after the description of the `calc_network_catchment` function:*
+    - "`calc_catchment` and `calc_network_catchment` provide complementary functions that allow for the computation of catchment areas. Although for many transport applications it would be better to use the `calc_network_catchment` function that uses the true network distances, it may still be useful to use the straight-line version in some cases. These include calculating the population that may be affected by noise levels from transport infrastructure (such as a motorway) where the effects of noise are not limited by the network. In situations where network data is not available it would be possible to use the `calc_catchment` function together with a fixed assumption about what straight-line distance corresponds to the desired network distance (i.e., 1km network = 700m straight-line). It may also be appropriate to use the straight-line distance when the network is not a reasonable constraint. This may be because the infrastructure of interest is accessed primarily by walking or cycling in an area where these are not limited to the road network (such as parks or shopping areas with passthroughs or overpasses available to pedestrians)."
+    
+1. Lastly, be careful of a few typos remaining in the document,
+  (eg. Page 7 – fix Table ??)
+  
+    - *We have carefully gone over the text and fixed a number of typos. The table label has been fixed. In addition, it now has a proper caption and specifies mode in the first column to increase readability.*
+    
+**Reviewer 2**
+
+    Introduction section:
+
+1. Page 1, 1st paragraph: use of work "computating" is strange, did you mean
+to use "computing"?
+
+    - *Indeed, that was a typo and we intended to use 'computing' instead. In any case the emphasis was shifted in the relevant paragraph, so computing is substituted for 'open-source software' which is more specific and clear:*
+    - "However, with the push for evidence-based policy, the pressure to adopt scientific methods has grown. This includes the development and use of open source software (Balmer et al., 2009)."
+    
+1. Page 1, 2nd paragraph: provide descriptive information on the other
+domains used by the sp package
+
+    - We have followed this suggestion. The relevant sentences now read as follows:
+    - "These include: disease mapping and modelling, with packages such as SpatialEpi and diseasemapping (Kim and Wakefield, 2016; Brown and Zhou, 2016); spatial ecology, with the adehabitat family of packages (Calenge, 2006); and visualisation, as illustrated by leaflet, tmap and mapview."
+    
+    Motivations section:
+
+1. Page 2, last paragraph: strange use of semi-colon ("...; they ease...")
+consider revising
+
+    - *We agree the paragraph was clunky. It has been re-written for clarity and it now begins as follows (semi colons are still used to separate list items as elsewhere in the paper):*
+    - "There are further potential advantages of using scriptable, interpreted, open source languages such as R for transport planning:"
+    
+    Core functions and classes section:
+
+1. Page 2, 1st paragraph: spell out the numeral 3
+
+    - *We have corrected this.*
+    
+1. Page 3, 2nd paragraph: introduce or explain the package sf
+
+    - *The paragraph has been reworded to make it clearer and more concise. The sf package is now introduced as follows:*
+    - "The issue of breaking changes could be resolved by only applying type stability only
+to objects of class \texttt{sf} from  the new \textbf{sf} package,
+which represents a paradigm in R's handling of
+spatial data in R that has many advantages over its predecessor \textbf{sp}."
+    
+    Accessing and processing transport data section:
+
+1. Consider renaming section to something like "Accessing transportation
+safety data"
+
+    - *We have renamed the section as:*
+    - "Road traffic casualty data"
+    
+1. Would it be possible to provide other examples of transportation data
+downloading?
+
+    - *We have added an additional example from census data and using stplanr together with the bikedata package.*
+
+1. Page 4, there is a typo on the following line:
+
+    ```{r, eval=FALSE}
+    data("route_network") 
+    devtools::install_github("ropensci/splanr")
+    
+       # It should be:
+    data("route_network") #
+    devtools::install_github("ropensci/stplanr")
+    ```
+
+    - *Agreed, fixed. Note the version number is no longer relevant so the entire comment is now superfluous and has been removed.*
+    
+    Creating geographic desire lines section:
+
+1. Identify the origin of the data used on the desire lines example
+
+    - *We agree that the description of the dataset was not sufficiently clear, especially for people new to OD data. We have added a reference that provides a good introduction to the importance of OD data, linked to a source of free national OD data, and updated sentences that describe the example data as follows:*
+    - "\texttt{flow} is a \texttt{data.frame} representing the number of home-work commutes by mode between residential areas in the UK, provided provided in \textbf{stplanr} for teaching and demonstration purposes (see \texttt{?flow} to see how this dataset was created):"
+    
+    Models of travel behavior section:
+ 
+1. The step on four-step modeling that uses gravity models is typically
+referred to as trip distribution, the authors should acknowledge that and
+explain that gravity is only one of the methods available to distribute trip
+marginal totals to update an OD matrix.
+
+    - RE
+    - 
+    
+**Reviewer 3**
+
+1. The authors may want to improve on the display of desire lines by using tools such as the one presented below.
+
+    - *We thanks the reviewer for the suggestion, and have provided links to the kateto.net visualisation. However, we do not think it benefit understanding of the stplanr package --- the purpose of this paper --- to redraw desire lines using external tools. In fact, using R's base plotting methods is beneficial to the extent that it ensures a focus on the data and reduces dependencies on external packages. Although stplanr is not a visualisation package (as highlighted in the paragraph that begins "It may therefore come as a surprise that \textbf{stplanr} contains nofunctions for visualisation"), many readers will be interested in visualisation, hence our new link to the introducing-stplanr vignette in response to this comment:*
+    - "The red lines in the left hand panel are very
+different from the hypothetical straight `desire lines' often used in
+transport research, highlighting the importance of this route-allocation
+functionality (see \texttt{vignette("introducing-stplanr")} and \href{http://kateto.net/network-visualization}{kateto.net} for more sophisticated visualisation methods)."
+    
+2. The proposed package relies on APIs for other open source data providers such as
+graphhopper and OSM to estimate travel times by different modes. Over the years, I
+found that open source data providers change data interchange protocols, which
+requires packages such as stplanr to be regularly updated. This could prove a
+daunting task for the developers and could be a limiting factor for users in the case
+when the tools are not updated or data providers limit the use of their data or
+bandwidth. We have routinely run into this problem with Google Maps when we
+batch process large amounts of data.
+
+    - RE
+    - 
+    
+3. The section on Modelling Mode Choice is rather misleading because in the
+traditional transport planning literature modelling mode choice implies estimating
+models to forecast modes of travel. Similarly, the section on Models of Travel
+Behaviour also is misleading. The transportation planning literature is rich with
+publications on travel behaviour, which are focused on the analysis of motivations of
+individuals as they choose between different modes of travel all roots. The discussion
+on travel behaviour in the paper is rather elementary.
+
+    - RE
+    - 
+    
+1. The paper should not be marketed as a generic tool for transport planning. Instead,
+it should be presented as a collection of tools to visualize transport data.
+
+    - We agree that **stplanr** should not be marketed as a generic tool for planning - that was never the intention. We have emphasised the package's focus on **spatial** data, which is its niche area within the wider transport planning process. This is emphasised in the conclusion and the (updated) abstract:
+        - "The **stplanr** package provides such tools, with an emphasis on spatial transport data and non-motorized modes."
+    
+2. The paper should highlight that the package is more useful for analysing non-
+motorized modes of travel.
+
+    - We agree that the paper has an emphasis on non-motorised modes and have clarified this in the abstract (see previous quote). However, the methods could be (and have been) extended to analyse a wide variety of modes so we don't want to give the impression that that's all stplanr can do so we have not pushed the point too far. We are open for further discussion of this: should it exculsively be about non-motorised modes or should the emphasis be on 'sustainable' transport systems, by which we mean transport systems which are not heavily reliant on fossil fuels? We suspect the latter is more appropriate but welcome further comments from the reviewers on this.
+    
+3. The paper should highlight that transport planning involves a much wider range of
+analysis involving multiple modes and that this paper is focused on a subset of tools
+and utilities that would help transport planners visualize travel flow data and
+catchment analysis.
+
+    - We have emphasised that **stplanr** only provides input to part of the transport planning process. This is well examplified in the following introductory section, which contains a new reference on the wider context and emphasises future potential rather than current capability:
+    - "It is intended that this [stplanr] feeds into the wider process of transport planning, which is arguably undergoing a paradigm shift towards sustainability (Banister, 2008). Although the focus is on spatial transport datasets (and most transport problems contain a spatial component), \textbf{stplanr} could be extended in non-spatial directions such as mode choice modelling."
+      
+## Additional changes
+
+The abstract has been rewritten to emphasise the benefits of accessible software in general, not just **stplanr** for reproducible and accountable evidence-based decision making.
+It is now clearer and easier to read and understand we think.
+
+In the first paragraph the emphasis has shifted to 'evidence-based policy' rather the more nebulous concept of sustainability following feedback from colleagues.
+The importance of sustainability comes through later but is less directly related to open source software, hence this shift.
+
+We are grateful to the description of and links to websites on proprietary transport planning applications and have now linked to these in the main paper:
+
+- https://www.inrosoftware.com/en/products/emme/
+- http://www.caliper.com/tcovu.htm
+
+It's great to hear about **TravelR** and see the [slides](https://www.r-project.org/conferences/useR-2010/slides/Raw.pdf) from it from useR 2010 - we now acknowledge this prior work (which we were unaware of) early-on in the paper.
+
+
+
+

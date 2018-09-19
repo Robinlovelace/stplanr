@@ -3,5 +3,6 @@
 *.log
 *.pdf
 *.gz
-responses*
+responses.pdf
+responses.tex
 *.txt
