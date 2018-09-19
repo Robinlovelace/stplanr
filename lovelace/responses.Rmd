@@ -178,8 +178,8 @@ referred to as trip distribution, the authors should acknowledge that and
 explain that gravity is only one of the methods available to distribute trip
 marginal totals to update an OD matrix.
 
-    - RE
-    - 
+    - *We have included the following description of that acknowledges the range of methods:*
+    - This involves identifying destinations for trips generated in each zone (creating OD data), which can be done with a gravity model, logit model, or other technique under the broad banner of `spatial interaction model' (SIM).
     
 **Reviewer 3**
 
@@ -200,8 +200,7 @@ when the tools are not updated or data providers limit the use of their data or
 bandwidth. We have routinely run into this problem with Google Maps when we
 batch process large amounts of data.
 
-    - RE
-    - 
+    - *We now critique online routing services and point towards the benefits of local routing.*
     
 3. The section on Modelling Mode Choice is rather misleading because in the
 traditional transport planning literature modelling mode choice implies estimating
@@ -211,8 +210,7 @@ publications on travel behaviour, which are focused on the analysis of motivatio
 individuals as they choose between different modes of travel all roots. The discussion
 on travel behaviour in the paper is rather elementary.
 
-    - RE
-    - 
+    - We now call the section ``Modelling and visualisation'' and the subsection ``analysing mode choice''. Overall we make it clear what the niche of the package is and do not claim to compete with mainstream transport modelling software.
     
 1. The paper should not be marketed as a generic tool for transport planning. Instead,
 it should be presented as a collection of tools to visualize transport data.
@@ -235,6 +233,8 @@ catchment analysis.
       
 ## Additional changes
 
+The paper has undergone a major rewrite following major changes to the package, primarily support for the sf class system.
+
 The abstract has been rewritten to emphasise the benefits of accessible software in general, not just **stplanr** for reproducible and accountable evidence-based decision making.
 It is now clearer and easier to read and understand we think.
 
@@ -247,7 +247,4 @@ We are grateful to the description of and links to websites on proprietary trans
 - http://www.caliper.com/tcovu.htm
 
 It's great to hear about **TravelR** and see the [slides](https://www.r-project.org/conferences/useR-2010/slides/Raw.pdf) from it from useR 2010 - we now acknowledge this prior work (which we were unaware of) early-on in the paper.
-
-
-
 
