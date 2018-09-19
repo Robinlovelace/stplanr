@@ -304,7 +304,7 @@ easier thanks to the `open data' movement and packages such as
 \textbf{stplanr} helps import data with functions including
 \texttt{read\_table\_builder}, for importing data from the
 Australian Bureau of Statistics (ABS), and
-\texttt{dl_stats19} for downloading datasets from the UK's Stats19 road traffic
+\texttt{dl\_stats19} for downloading datasets from the UK's Stats19 road traffic
 casualty system. A brief example of the latter is demonstrated below,
 which begins with downloading the data (warning this downloads
 \textasciitilde{}100 MB of data):
@@ -586,7 +586,8 @@ API key
   purchased for large scale routing) from
   \href{https://www.cyclestreets.net/api/apply/}{cyclestreets.net/api/apply}.
   See \texttt{?route\_cyclestreet} for details. Thanks to Martin
-  Lucas-Smith and Simon Nuttall for making this possible.}
+  Lucas-Smith and Simon Nuttall for making this possible.
+  Note: an updated interface to cyclestreets.net has been made available via the package \CRANpkg{cyclestreets}.}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -1082,37 +1083,34 @@ and communicating transport data.
 
 \section{Future directions of travel}\label{future-directions-of-travel}
 
-This paper demonstrates that transort planning can be done with open source, scriptable software.
-We set out reasons for using R for transport planning and demonstrated the possibilities in the area of spatial data analysis for active travel planning with reproducible examples from \CRANpkg{stplanr}.
-This is, to our knowledge, is the first R package aimed specifically to help practitioners and researchers design more sustainable transport systems.
+This paper demonstrates that transort planning can be done with R.
+We set out reasons for using open source software in general and command-line interfaces in particular for reproducibility, transparency and democratic accountability.
+This is, to our knowledge, is the first R package aimed at enabling practitioners and researchers to design more sustainable transport systems.
 However, much more is possible in this direction.
 % Indeed, transport planning is a large and highly diverse area.
 % Add this as a footnote?
 % Transport planning has links to areas of knowledge which are already well-served by packages have yet to receive much (if any) attention from the transport community statistical networks, activity space analysis and the development of interactive online visualisations to encourage public engagement in the process.
 
-The focus of \CRANpkg{stplanr} on geographic transport data was originally driven by the author's research interests.
-However, we believe there are good reasons to continue this focus.
+\CRANpkg{stplanr} focuses on geographic analysis of transport systems, a niche that is apparent from existing tools
 Proprietary software such as \href{https://www.inrosoftware.com/en/products/emme/}{INRO}, \href{http://vision-traffic.ptvgroup.com/en-us/products/ptv-visum/}{PTV Visum} and  \href{http://www.caliper.com/tcovu.htm}{TransCAD} dominate geospatial methods in applied transport planning.
 This differs from other fields that use geospatial methods such spatial epidemiology and ecology, where open source software dominate.
 Furthermore, the successful `unix approach' to software development implies that each piece of software does a limited number of things well.
 To avoid the pitfall of `feature creep' it makes sense to specialise.
 
-The lack of existing packages that do the same job direct our attention towards \textbf{stplanr}'s basic functionality rather than more advanced and esoteric features.
-A good example of this is the \code{SpatialLinesNetwork} class which could provide a basis for future developments including a \code{route\_sln} function to facilitate routing in R, without recourse to external services.
-This direction of `incremental growth' could proceed by adding interfaces to more transport planning APIs, including \href{https://www.routino.org/uk/}{Routino} and \href{https://www.mapbox.com/directions/}{Directions} provided by mapping company Mapbox, mitigating the limitations of online API services.
+The lack of existing packages that do the same job direct our attention towards \textbf{stplanr}'s basic functionality rather than more advanced features.
+A good example of this is the \code{SpatialLinesNetwork} class which could provide a basis for future developments including the recently implemented \code{route\_local} function.
+This direction of `incremental growth' could proceed by adding interfaces to more transport planning APIs, including \href{https://www.routino.org/uk/}{Routino} and \href{https://www.mapbox.com/directions/}{Directions} provided by mapping company Mapbox.
 
 Another example of the potential to develop basic functionality rather than new advanced features is the the possibility of creating an `\code{OD}' class to represent origin-destination data, which could ease the geographical analysis of OD data via generic methods.
 Building on the example data presented in previous sections the idea is for a single \code{OD} object to be able represent \code{flowlines}, \code{routes\_fast} and \code{routes\_quiet}.
-The recent development of the \CRANpkg{sf} (discussed below), with its support for multiple geometry columns, makes this option more feasible.
+The recent development of the \CRANpkg{sf}, with its support for multiple geometry columns, makes this option more feasible.
 
-Another desirable direction of travel is towards better support for large datasets.
+Another direction of travel is towards better support for large datasets.
 We have demonstrated \textbf{stplnr}'s capabilities on deliberately small datasets for ease of understanding.
 However, the third criterion of transport planning software set-out in the introduction --- \emph{scalability} --- is vital to package's real world utility in the age of transport-related `Big Data' \citep{lovelace_big_2016}.
-For this reason we have endeavoured to use efficient programming techniques package functions and use C++ (via \CRANpkg{Rcpp}) for computationally intensive operations on \code{SpatialLinesNetwork}.
-\CRANpkg{stplanr} was first developed to to generate data for the English national Propensity to Cycle Tool, which estimates cycling potential across all major cyclable routes in England \citep{lovelace_propensity_2017}.
-This experience led to a number of optimisations in the code, including an implementation a faster implementation of the \code{od2line} function (\code{od2line2}) and a commit that led to a 10 fold speed-up in the \code{line2route} function (see commit \href{https://github.com/ropensci/stplanr/commit/c834abf7d0020c6fbb33845572d6be4801f31f47}{c834abf}).
-
-However, there are still opportunities for improving performance, including:
+Some functions use C++ (via \CRANpkg{Rcpp}) for computationally intensive operations, and we plan to continue the drive toward performant code.
+% This experience led to a number of optimisations in the code, including an implementation a faster implementation of the \code{od2line} function (\code{od2line2}) and a commit that led to a 10 fold speed-up in the \code{line2route} function (see commit \href{https://github.com/ropensci/stplanr/commit/c834abf7d0020c6fbb33845572d6be4801f31f47}{c834abf}).
+Opportunities for improving performance include:
 integration with transport databases (e.g. via the \CRANpkg{bikedata} package);
 support for batch routing APIs;
 parallel implementations of time-consuming functions;
@@ -1125,9 +1123,8 @@ and the refactoring of slow functions (e.g. \code{overline}, which takes hours t
 % builds on existing packages and \CRANpkg{sp} classes to work with common
 % transport data formats.
 
-It is useful to see \textbf{stplanr}, and R for transport planning in
-general, as an addition tool in the transport planner's cabinet. It can
-be understood as one part of a wider movement that is making transport
+Rather than a `one size fits all' package, we see \textbf{stplanr} as an addition tool in the transport planner's cabinet.
+It is part of a wider movement that is making transport
 planning a more open and democratic process. Other developments in this
 movement include the increasing availability of open data
 \citep{naumova_building_2016} and the rise of open source products for
@@ -1141,63 +1138,62 @@ In this context, \textbf{stplanr}'s focus on
 GIS operations represents a niche in the market, allowing it to
 complement such software and help make better use of new open data
 sources.
+\textbf{stplanr} could also be used alongside other R packages that
+use spatial transport data such as \CRANpkg{aspace} and
+\CRANpkg{MCI} \citep{RJ-2017-020}.
 
-Furthermore \textbf{stplanr} could be used alongside other R packages that
-would benefit from spatial transport data as input.
-These include packages for activity space analysis (e.g. \CRANpkg{aspace}) and
-service location planning (e.g. \CRANpkg{MCI}) \citep{RJ-2017-020}.
-
-
-Because transport planning is an inherently spatial activity,
-\textbf{stplanr} occupies an important niche in the transport planning
-software landscape, with its focus on spatial transport data. There is
-great potential for development of \textbf{stplanr} in many directions.
-Desirable developments include the additional of functions for modelling
-modal split and improving the computational efficiency of
-existing functions to make the methods more scalable for large
-databases. Our priority for \textbf{stplanr} however, is to keep the
-focus on geographic functions for transport planning. There are many
-opportunities in this direction, including:
-
-\begin{itemize}
-\tightlist
-\item
-  Functions to assess the environment surrounding routes, e.g.~via
-  integration with the in-development \textbf{osmdata} package.
-\item
-  Functions to match different GIS routes, perhaps building on the
-  Hausdorf distance algorithm implemented in the \CRANpkg{rgeos}
-  function \texttt{gDistance}.
-\item
-  Additional functions for route-allocation of travel, e.g.~via an
-  interface to the OpenTripPlanner API.
-\item
-  Functions for aggregating very large GPS trace datasets (e.g.~into
-  raster cells) for anonymisation and analysis/visualisation purposes.
-\item
-  The creation of a class system for spatial transport datasets, such as
-  to represent spatial route and a route networks (perhaps with classes
-  named \code{"sr"} and \code{"srn"}). This is not a short-term priority
-  and it would be beneficial to coincide such developments to a
-  migration to \CRANpkg{sf} for spatial classes.
-\end{itemize}
-
-Such spatial data processing capabilities would increase the range of
-transport planning tasks that \textbf{stplanr} can facilitate. For all
-this planned development activity to be useful, it is vital that new
-functionality is user friendly. R has a famously steep learning curve.
-Implementing simple concepts such as consistent naming systems
-\citep{baath_state_2012} and ensuring `type stability' can greatly
-improve the usability of the package. For this reason, much future work
-in \textbf{stplanr} will go into improving documentation and
-user-friendliness.
-
-We have set out clear motivations for
-developing transport planning capabilities in R and believe that
-\textbf{stplanr} provides major a step in that direction.
-However, it is important to recognise that open source software is
-a broad church with many alternative and potentially mutually beneficial
-projects existing in parallel.
+\CRANpkg{stplanr} was first developed to generate data for the Propensity to Cycle Tool (PCT), which estimates cycling potential down to the street level across all major cyclable routes in England and Wales \citep{lovelace_propensity_2017}.
+We believe there are many other national and international transport planning challenges the package could be used to solve.
+% Because transport planning is an inherently spatial activity,
+% \textbf{stplanr} occupies an important niche in the transport planning
+% software landscape, with its focus on spatial transport data. There is
+% great potential for development of \textbf{stplanr} in many directions.
+% Desirable developments include the additional of functions for modelling
+% modal split and improving the computational efficiency of
+% existing functions to make the methods more scalable for large
+% databases. Our priority for \textbf{stplanr} however, is to keep the
+% focus on geographic functions for transport planning. There are many
+% opportunities in this direction, including:
+%
+% \begin{itemize}
+% \tightlist
+% \item
+%   Functions to assess the environment surrounding routes, e.g.~via
+%   integration with the in-development \textbf{osmdata} package.
+% \item
+%   Functions to match different GIS routes, perhaps building on the
+%   Hausdorf distance algorithm implemented in the \CRANpkg{rgeos}
+%   function \texttt{gDistance}.
+% \item
+%   Additional functions for route-allocation of travel, e.g.~via an
+%   interface to the OpenTripPlanner API.
+% \item
+%   Functions for aggregating very large GPS trace datasets (e.g.~into
+%   raster cells) for anonymisation and analysis/visualisation purposes.
+% \item
+%   The creation of a class system for spatial transport datasets, such as
+%   to represent spatial route and a route networks (perhaps with classes
+%   named \code{"sr"} and \code{"srn"}). This is not a short-term priority
+%   and it would be beneficial to coincide such developments to a
+%   migration to \CRANpkg{sf} for spatial classes.
+% \end{itemize}
+%
+% Such spatial data processing capabilities would increase the range of
+% transport planning tasks that \textbf{stplanr} can facilitate. For all
+% this planned development activity to be useful, it is vital that new
+% functionality is user friendly. R has a famously steep learning curve.
+% Implementing simple concepts such as consistent naming systems
+% \citep{baath_state_2012} and ensuring `type stability' can greatly
+% improve the usability of the package. For this reason, much future work
+% in \textbf{stplanr} will go into improving documentation and
+% user-friendliness.
+%
+% We have set out clear motivations for
+% developing transport planning capabilities in R and believe that
+% \textbf{stplanr} provides major a step in that direction.
+% However, it is important to recognise that open source software is
+% a broad church with many alternative and potentially mutually beneficial
+% projects existing in parallel.
 In the context of the increasing availability of open access data\footnote{Two
 examples of this are the \CRANpkg{osmdata} CRAN package \citep{Padgham2017} and the Python package
 \href{https://github.com/gboeing/osmnx}{OSMnx} \citep{boeing_osmnx:_2017}, for downloading and processing
@@ -1205,7 +1201,7 @@ open access datasets from OpenStreetMap.}
 packages for analysing transport datasets such as \CRANpkg{stplanr} could help
 ensure that the
 evidence on which transport planning decisions are based is reproducible,
-systematic, and therefore more democratically accountable.
+systematic, and therefore democratically accountable.
 
 \section{Acknowledgements}
 

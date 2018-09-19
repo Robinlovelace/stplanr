@@ -2,7 +2,7 @@
 library(stplanr)
 
 if(dir.exists("vignettes/")) {
-  setwd("vignettes/")
+  wd_old <- setwd("vignettes/")
 }
 
 
@@ -35,7 +35,8 @@ knitr::kable(fun_table, caption = "Selection of functions for working with or ge
 # sp::proj4string(bb) <- sp::proj4string(route_network)
 # ca_local <- ca_sp[bb,]
 #
-# bb <- bb2poly(route_network)
+if(!file.exists("reqfiles.RData"))
+  download.file("https://github.com/Robinlovelace/stplanr/raw/rjournal-responses/lovelace/reqfiles.RData", "reqfiles.RData", mode = "wb")
 load("reqfiles.RData")
 
 ## ---- message=FALSE------------------------------------------------------
@@ -43,6 +44,7 @@ rnet_buff_100 <- buff_geo(route_network, width = 100)
 ca_buff <- ca_local[rnet_buff_100,]
 
 ## ----fats, fig.cap="Road traffic fatalities in the study area downloaded with with stplanr (crosses). Deaths that happened within 100 m of the route network are represented by circles.", out.width="50%", fig.align="center"----
+bb <- bb2poly(route_network)
 plot(bb, lty = 4)
 plot(rnet_buff_100, col = "grey", add = TRUE)
 points(ca_local, pch = 4)
@@ -162,7 +164,7 @@ QDF
 
 ## ----euclidfastest, out.width='100%', fig.cap='Euclidean and fastest route distance of trips in the study area (left) and Euclidean distance vs the proportion of trips made by walking (right).', echo=FALSE----
 par(mfrow = c(1, 2))
-lgb <- spTransform(l, CRSobj = CRS("+init=epsg:27700"))
+lgb <- sp::spTransform(l, CRSobj = CRS("+init=epsg:27700"))
 l$d_euclidean <- rgeos::gLength(lgb, byid = T)
 l$d_rf <- routes_fast@data$length
 plot(l$d_euclidean, l$d_rf,
@@ -215,3 +217,4 @@ pal <- viridis::viridis(n = 3, option = "C")
 tm_shape(flights_sp) +
   tm_lines(lwd = "Flights", col = "Flights", scale = 12, n = 3, palette = "YlGnBu")
 
+if(exists(("wd_old"))) setwd(wd_old)
