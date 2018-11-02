@@ -66,7 +66,7 @@ This emphasis is timely given the recent emphasis on sustainability \citep{banis
 % \subsection{Motivations}\label{motivations}
 
 A major motivation was the lack of R packages, and open source software in general, for transport applications.
-This may be surprising given the uqiquity of transport problems;\footnote{
+This may be surprising given the ubiquity of transport problems;\footnote{
 Many people can think of things that could be improved on their local transport networks, especially for walking, cycling and wheel-chairs.
   But most lack the evidence to communicate the issues, and potential solutions, to others.
   }
@@ -112,7 +112,7 @@ environment for transport planning research. There are many quantitative
 methods in transport planning, many of which fit into the
 classic `four stage' transport model which involves the following steps
 \citep{willumsen_modelling_2011}:
-(1) trip \emph{generation} to estimate trip freqency from origins;
+(1) trip \emph{generation} to estimate trip frequency from origins;
 (2) \emph{distribution} of trips to destinations;
 (3) \emph{modal split} of trips between walking, cycling, buses etc.;
 (4) \emph{assignment} of trips to the transport route network.
@@ -216,13 +216,15 @@ library(stplanr)
 \end{Sinput}
 \end{Schunk}
 
-\textbf{stplanr} imports both \CRANpkg{sp} and its successor \CRANpkg{sf}, meaning that spatial objects used in the package can be processed with base R functions such as
+\textbf{stplanr} imports both \CRANpkg{sp} and its successor \CRANpkg{sf}.
+This means that spatial objects used in and produced by the package work with base R functions such as
 \texttt{summary}, \texttt{aggregate} and \texttt{plot} \citep{bivand_applied_2013}.
+Furthermore, output objects of class \texttt{sf} are *mostly* compatible with the popular data processing package \CRANpkg{dplyr}.
 
 \subsection{Core functions and
 classes}\label{core-functions-and-classes}
 
-The package's core functions are structured around 3 common types of
+The package's core functions are structured around three common types of
 spatial transport data:
 
 \begin{itemize}
@@ -305,7 +307,10 @@ easier thanks to the `open data' movement and packages such as
 \texttt{read\_table\_builder}, for importing data from the
 Australian Bureau of Statistics (ABS), and
 \texttt{dl\_stats19} for downloading datasets from the UK's Stats19 road traffic
-casualty system. A brief example of the latter is demonstrated below,
+casualty system.\footnote{
+We plan to split-out this functionality into a new package for modularity.
+}
+A brief example of the latter is demonstrated below,
 which begins with downloading the data (warning this downloads
 \textasciitilde{}100 MB of data):
 
@@ -348,7 +353,7 @@ ca_ac <- inner_join(ca, ac)
 ca_fatal <- ca_ac %>%
   filter(Casualty_Severity == "Fatal" & !is.na(Latitude)) %>%
   select(Age = Age_of_Casualty, Mode = Casualty_Type, Longitude, Latitude)
-ca_sp <- SpatialPointsDataFrame(coords = ca_fatal[3:4], data = ca_fatal[1:2])
+ca_sp <- sp::SpatialPointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
 \end{Sinput}
 \end{Schunk}
 
@@ -367,9 +372,9 @@ dataset into a box, represented as a rectangular
 \begin{Schunk}
 \begin{Sinput}
 data("route_network")
-proj4string(ca_sp) <- proj4string(route_network)
+sp::proj4string(ca_sp) <- sp::proj4string(route_network)
 bb <- bb2poly(route_network)
-proj4string(bb) <- proj4string(route_network)
+sp::proj4string(bb) <- sp::proj4string(route_network)
 ca_local <- ca_sp[bb,]
 \end{Sinput}
 \end{Schunk}
@@ -525,22 +530,23 @@ l <- od2line(flow = flow, zones = cents)
 \includegraphics[width=\textwidth]{flights} \caption[Flights from New York]{Flights from New York to airports within 1000 km. Data from the \CRANpkg{nycflights} package converted to geographic desire lines with the \texttt{od2line} function.}\label{fig:flights}
 \end{figure}
 
-The resulting \texttt{l} object data is now in a spatial data class, enabling geographic analysis and
-visualisation, as illustrated in Figure \ref{fig:lines_routes}.
-A larger example of this desire line creation method is illustrated in \ref{fig:flights}, which also makes use of the function \texttt{buff\_geo}, is provided below based on a large dataset of flights from New York in 2013 from the \CRANpkg{nycflights13} package:
+The resulting object, \texttt{l}, is spatial.
+This enables subsequent geographic analysis and visualisation stages.
+A larger example of this desire line creation method is demonstrated in the code chunk below, which makes use of the function \texttt{buff\_geo}, to represent flights from New York in 2013 from the \CRANpkg{nycflights13} package.
+Figure \ref{fig:flights} demonstrates how the resulting spatial object can be plotted interactively using packages such as \CRANpkg{tmap} (visualisation code not shown for brevity).
 
 \begin{Schunk}
 \begin{Sinput}
 library(nycflights13)
 data("airports")
-crs <- CRS("+init=epsg:4326")
+crs <- sp::CRS("+init=epsg:4326")
 coords <- cbind(airports$lon, airports$lat)
-airports_sp <- SpatialPointsDataFrame(coords, airports, proj4string = crs)
+airports_sp <- sp::SpatialPointsDataFrame(coords, airports, proj4string = crs)
 ny_buff <- buff_geo(shp = airports_sp[airports_sp$faa == "NYC",], width = 1e6)
 airports_near <- airports_sp[ny_buff,]
 flights_near <- flights[flights$dest %in% airports_near$faa,]
-flights_agg <- group_by(flights_near, origin, dest) %>%
-  summarise(Flights = n())
+flights_agg <- dplyr::group_by(flights_near, origin, dest) %>%
+  dplyr::summarise(Flights = n())
 flights_sp = od2line(flow = flights_agg, zones = airports_near)
 plot(flights_sp)
 \end{Sinput}
@@ -649,7 +655,7 @@ To estimate the amount of capacity needed at each segment on the
 transport network, the \texttt{overline} function demonstrated above, is
 used to divide line geometries into unique segments and aggregate the
 overlapping values. The results, illustrated in the right-hand panel of
-Figure \ref{fig:lines_routes}, could be used to informt the decision making process at the route network level, such as where to create new bus routes cycle paths.
+Figure \ref{fig:lines_routes}, could be used to inform the decision making process at the route network level, such as where to create new bus routes cycle paths.
 
 Limitations with the \texttt{route\_cyclestreet} routing API include its
 specificity, to one mode (cycling) and a single region (the UK and part
@@ -696,7 +702,7 @@ areas}\label{modelling-travel-catchment-areas}
 Catchment areas are useful analytic and visual tools in transport planning.
 They can help who will benefit from a particular
 transport intervention (such as a new bus stop) and
-illustrate the geographic area that is covered by (or omited from) a particular service
+illustrate the geographic area that is covered by (or omitted from) a particular service
 service or transport system, to help prioritise new investment.
 Passengers are often said to be willing to walk
 up to 400 metres to a bus stop, or 800 metres to a railway station
@@ -766,7 +772,7 @@ catch800m <- calc_catchment(
 \end{Schunk}
 
 The result can be used to calculate the total population within the
-catchment areas of the cycleway, with the command \texttt{sum(catch800m$Total)}: 39418 people.
+catchment areas of the cycleway, with the command \texttt{sum\(catch800m\$Total\)}: 39418 people.
 The catchment area can then be visualised (see
 Figure \ref{fig:catchmentplot}):
 
@@ -1021,7 +1027,7 @@ The results of these regression models can be seen using
 predictor of walking than route distance, but no strong conclusions can
 be drawn from this finding, with such a small sample of desire lines (n
 = 42). The results are purely illustrative, of the
-possibilities created by using \textbf{stplanr} in conjuction with R's
+possibilities created by using \textbf{stplanr} in conjunction with R's
 modelling capabilities (see Figure \vref{fig:euclidwalking2}).
 
 \begin{Schunk}
@@ -1066,7 +1072,7 @@ and communicating transport data.
 
 \section{Future directions of travel}\label{future-directions-of-travel}
 
-This paper demonstrates that transort planning can be done with R.
+This paper demonstrates that transport planning can be done with R.
 We set out reasons for using open source software in general and command-line interfaces in particular for reproducibility, transparency and democratic accountability.
 This is, to our knowledge, is the first R package aimed at enabling practitioners and researchers to design more sustainable transport systems.
 However, much more is possible in this direction.
@@ -1077,7 +1083,7 @@ However, much more is possible in this direction.
 \CRANpkg{stplanr} focuses on geographic analysis of transport systems, a niche that is apparent from existing tools
 Proprietary software such as \href{https://www.inrosoftware.com/en/products/emme/}{INRO}, \href{http://vision-traffic.ptvgroup.com/en-us/products/ptv-visum/}{PTV Visum} and  \href{http://www.caliper.com/tcovu.htm}{TransCAD} dominate geospatial methods in applied transport planning.
 This differs from other fields that use geospatial methods such spatial epidemiology and ecology, where open source software dominate.
-Furthermore, the successful `unix approach' to software development implies that each piece of software does a limited number of things well.
+Furthermore, the successful `UNIX approach' to software development implies that each piece of software does a limited number of things well.
 To avoid the pitfall of `feature creep' it makes sense to specialise.
 
 The lack of existing packages that do the same job direct our attention towards \textbf{stplanr}'s basic functionality rather than more advanced features.

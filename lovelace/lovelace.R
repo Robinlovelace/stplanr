@@ -29,7 +29,7 @@ knitr::kable(fun_table, caption = "Selection of functions for working with or ge
 #  select(Age = Age_of_Casualty, Mode = Casualty_Type, Longitude, Latitude)
 # ca_sp <- sp::SpatialPointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
 #
-# data("route_network") # devtools::install_github("ropensci/splanr")
+# data("route_network")
 # sp::proj4string(ca_sp) <- sp::proj4string(route_network)
 # bb <- bb2poly(route_network)
 # sp::proj4string(bb) <- sp::proj4string(route_network)
@@ -60,6 +60,24 @@ as.data.frame(cents[1:3, -c(3,4)])
 
 ## ---- warning=FALSE------------------------------------------------------
 l <- od2line(flow = flow, zones = cents)
+
+
+library(nycflights13)
+data("airports")
+airports_sf <- sf::st_as_sf(airports, coords = c("lon", "lat"), crs = 4326)
+ny_buff <- buff_geo(airports_sf[airports_sf$faa == "NYC",], width = 1e6)
+airports_near <- airports_sp[ny_buff,]
+flights_near <- flights[flights$dest %in% airports_near$faa,]
+flights_agg <- dplyr::group_by(flights_near, origin, dest) %>%
+  dplyr::summarise(Flights = n())
+flights_sp = od2line(flow = flights_agg, zones = airports_near)
+plot(flights_sp)
+
+library(tmap)
+tmap_mode("view")
+pal <- viridis::viridis(n = 3, option = "C")
+tm_shape(flights_sp) +
+  tm_lines(lwd = "Flights", col = "Flights", scale = 12, n = 3, palette = "YlGnBu")
 
 ## ---- eval=FALSE---------------------------------------------------------
 ## route_bl <- route_cyclestreet(from = "Bradford, Yorkshire", to = "Leeds, Yorkshire")
@@ -197,24 +215,5 @@ lm3p <- predict(lm3, l2)
 lines(l2$d_euclidean, lm1p)
 lines(l2$d_euclidean, exp(lm2p), col = "green")
 lines(l2$d_euclidean, exp(lm3p), col = "red")
-
-library(nycflights13)
-data("airports")
-crs <- sp::CRS("+init=epsg:4326")
-coords <- cbind(airports$lon, airports$lat)
-airports_sp <- sp::SpatialPointsDataFrame(coords, airports, proj4string = crs)
-ny_buff <- buff_geo(shp = airports_sp[airports_sp$faa == "NYC",], width = 1e6)
-airports_near <- airports_sp[ny_buff,]
-flights_near <- flights[flights$dest %in% airports_near$faa,]
-flights_agg <- dplyr::group_by(flights_near, origin, dest) %>%
-  dplyr::summarise(Flights = n())
-flights_sp = od2line(flow = flights_agg, zones = airports_near)
-plot(flights_sp)
-
-library(tmap)
-tmap_mode("view")
-pal <- viridis::viridis(n = 3, option = "C")
-tm_shape(flights_sp) +
-  tm_lines(lwd = "Flights", col = "Flights", scale = 12, n = 3, palette = "YlGnBu")
 
 if(exists(("wd_old"))) setwd(wd_old)
