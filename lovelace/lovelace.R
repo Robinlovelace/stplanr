@@ -66,6 +66,7 @@ library(nycflights13)
 data("airports")
 airports_sf <- sf::st_as_sf(airports, coords = c("lon", "lat"), crs = 4326)
 ny_buff <- buff_geo(airports_sf[airports_sf$faa == "NYC",], width = 1e6)
+ny_buff <- sf::st_buffer(airports_sf[airports_sf$faa == "NYC",], dist = units::as_units(1e6, value = "m"))
 airports_near <- airports_sp[ny_buff,]
 flights_near <- flights[flights$dest %in% airports_near$faa,]
 flights_agg <- dplyr::group_by(flights_near, origin, dest) %>%
