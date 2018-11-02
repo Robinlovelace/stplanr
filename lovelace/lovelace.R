@@ -63,16 +63,14 @@ l <- od2line(flow = flow, zones = cents)
 
 
 library(nycflights13)
-data("airports")
 airports_sf <- sf::st_as_sf(airports, coords = c("lon", "lat"), crs = 4326)
-ny_buff <- buff_geo(airports_sf[airports_sf$faa == "NYC",], width = 1e6)
-ny_buff <- sf::st_buffer(airports_sf[airports_sf$faa == "NYC",], dist = units::as_units(1e6, value = "m"))
-airports_near <- airports_sp[ny_buff,]
+ny_buff <- geo_buffer(airports_sf[airports_sf$faa == "NYC",], dist = 1e6)
+airports_near <- airports_sf[ny_buff,]
 flights_near <- flights[flights$dest %in% airports_near$faa,]
 flights_agg <- dplyr::group_by(flights_near, origin, dest) %>%
   dplyr::summarise(Flights = n())
-flights_sp = od2line(flow = flights_agg, zones = airports_near)
-plot(flights_sp)
+flights_sf = od2line(flow = flights_agg, zones = airports_near)
+plot(flights_sf, lwd = flights_sf$Flights / 1e3)
 
 library(tmap)
 tmap_mode("view")
