@@ -1,0 +1,71 @@
+---
+output:
+  pdf_document: 
+    keep_tex: true
+  html_document: default
+---
+
+# stplanr paper: Responses to reviewer's comments
+
+We thank the reviewers for constructive and detailed comments on the paper.
+In response we have made a wide range changes that improve the manuscript in many ways.
+There have been many changes focussed on improving readability and providing context, partly in response to the high-level comments of reviewer 1.
+These responses focus only on specific comments, to ensure that we dealt with them in a systematic manner. 
+
+To see the full list of changes please refer to this pull request which shows precisely what has changed in the source of the paper, line-by-line: https://github.com/Robinlovelace/stplanr/pull/4/ and https://github.com/Robinlovelace/stplanr/pull/10.
+
+For clarity we use the following conventions:
+
+- reviewers comments are numbered to ease future communications
+- our responses are in plain text
+
+**Reviewer 1**
+
+- 1.1. Accessibility is not the same as catchment area analysis. Accessibility is a
+joint measure of both land use and transport interactions (for example the
+number of jobs that are reachable in 45 minutes by transit). I would remove
+the discussion of accessibility from this section as it is not used
+correctly and would not change the discussion of the catchment areas.
+
+Good point, we were conflating the two. The section is now shorter and focusses on catchment areas.
+    
+**Reviewer 2**
+
+- Page 1, last paragraph: the word uqiquity should be ubiquity.
+
+Done
+
+- Page 2, last paragraph: it's good to know that the package's return
+objects can be used with base R functions, but can they also be used with
+dplyr alternatives? Knowing that may pique the interest of a wider audience
+and will flow nicely when dplyr capabilities and performance are noted a
+couple of pages later.
+
+Good point: it's worth mentioning that sf objects will return sf objects, which are largely compatible with **dplyr**. Now mentioned as follows:
+
+```
+Furthermore, output objects of class \texttt{sf} are *mostly* compatible
+with the popular data processing package \CRANpkg{dplyr}.
+```
+
+We have also updated the flights example to use sf objects, highlighting this point.
+
+- Page 3, first paragraph: spell out the number 3.
+
+Done 
+
+- Page 6, the fact that the authors present Figure 4 before Figure 3 makes
+the OD line discussion a bit hard to follow.  It is also a bit confusing
+that the sample code provided does not reproduce the map presented in Figure
+3.
+
+Valid points. We now don't refer to Figure 4 until later on to reduce confusion. Furthermore, we explain why the visualisation code is not shown and point interested readers who want to reproduce it in the right direction:
+
+```
+Figure \ref{fig:flights} demonstrates how the resulting spatial object can
+be plotted interactively using packages such as \CRANpkg{tmap}
+(see the accompanying R file for visualisation code).
+
+```
+
+
