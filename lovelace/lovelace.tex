@@ -10,17 +10,18 @@ The \pkg{stplanr} package demonstrates and provides a home for such tools, with 
 The \pkg{stplanr} package facilitates common transport planning tasks including:
 downloading and cleaning transport datasets;
 creating geographic ``desire lines'' from origin-destination (OD) data;
-route assignment, via the \code{"SpatialLinesNetwork"} class and
+route assignment, locally and
 interfaces to routing services such as \url{CycleStreets.net};
 calculation of route segment attributes such as bearing and aggregate flow;
 and `travel watershed' analysis.
 This paper demonstrates this functionality using reproducible examples on real transport
 datasets.
-More broadly, the experience shows open source software can form the basis of a reproducible
+More broadly, the experience of developing and using R functions for transport applications
+shows that open source software can form the basis of a reproducible
 transport planning workflow.
 The \pkg{stplanr} package, alongside other packages and open source projects,
 could provide a more transparent and democratically accountable alternative to the
-current approach which is heavily reliant on proprietary and technically and financially inaccessible software.
+current approach, which is heavily reliant on proprietary and relatively inaccessible software.
 }
 
 \section{Introduction}\label{introduction}
@@ -309,10 +310,8 @@ easier thanks to the ``open data'' movement and packages such as
 The \pkg{stplanr} package helps import data with functions including
 \code{read\_table\_builder}, for importing data from the
 Australian Bureau of Statistics (ABS), and
-\code{dl\_stats19}, for downloading datasets from the UK's Stats19 road traffic
-casualty system.\footnote{
-For modularity, we plan to split-out this functionality into a new package.
-}
+\code{dl\_stats19} --- which has now been split-out into the package \CRANpkg{stats19} --- for downloading datasets from the UK's Stats19 road traffic
+casualty system \citep{lovelace_stats19_2019}.
 A brief example of the latter is demonstrated below,
 which begins with downloading the data (warning this downloads
 \textasciitilde{}100 MB of data):
